@@ -35,8 +35,7 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     
 == Available Options
 
-source_root
-  the path (relative to the app root) where LESS files are located
+* source_root: the path (relative to the app root) where LESS files are located
 
 === hosted_at
 
@@ -60,9 +59,9 @@ will direct Rack::Less to respond to a request for app.css with the concatenated
   
 == Links
 
-GitHub: http://github.com/kelredd/rack-less/
+GitHub: http://github.com/kelredd/rack-less
     
-Less:   http://lesscss.org/
+Less:   http://lesscss.org
 
 == License
 
