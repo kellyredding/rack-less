@@ -29,13 +29,13 @@ module Rack::Less
       @default_options.each { |k,v| env[k] ||= v }
       @env = env
       # TODO: get this going
-      #if (@request = Request.new(@env.dup.freeze)).is_for_less_css?
+      if (@request = Request.new(@env.dup.freeze)).is_for_less_css?
         # compile less appropriately
         #response = 
         #response.to_a
-      #else
+      else
         @app.call(env)
-      #end
+      end
     end
 
   end
