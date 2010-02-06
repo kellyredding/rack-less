@@ -1,4 +1,4 @@
-= RackLess
+= Rack::Less
 
 == Description
 
@@ -6,7 +6,7 @@ A better way to use LESS CSS in Ruby web apps.
 
 == Installation
 
-    gem install rack-less
+    $ gem install rack-less
 
 == Basic Usage
 
@@ -16,20 +16,58 @@ or uses Rack::Builder to construct the application pipeline, simply require
 and use as follows:
 
     require 'rack/less'
-
-    use Rack::Less
-
+    use Rack::Less do
+      set :source_root, 'app/less'
+      set :hosted_at,   '/'
+      set :compress,    true
+    end
     run app
 
 == Using with Rails
 
 Add this to your `config/environment.rb`:
 
-   config.middleware.use Rack::Less
+    config.middleware.use Rack::Less, :compress => true
 
 You should now see `Rack::Less` listed in the middleware pipeline:
 
     rake middleware
+    
+== Available Options
+
+=== source_root
+
+the path (relative to the app root) where LESS files are located
+
+=== hosted_at
+
+the public HTTP root path for stylesheets
+
+=== cache
+
+whether to cache the compilation output to a corresponding file in the hosted_root
+
+=== compress
+
+whether to remove extraneous whitespace from compilation output
+
+=== concat
+
+directives for concatenating the ouput of one or more LESS compilations, for example:
+
+    {
+      'app' => ['one', 'two', 'three']
+    }
+    
+will respond to a request for app.css with the concatenated output of compiling one.less, two.less, and three.less
+  
+== Links
+
+GitHub:
+    http://github.com/kelredd/rack-less/
+    
+Less:
+    http://lesscss.org/
 
 == License
 

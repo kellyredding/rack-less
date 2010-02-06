@@ -6,18 +6,19 @@ class SinatraAppTest < Test::Unit::TestCase
   def app
     @app ||= SinatraApp
   end
+  def default_value(name)
+    Rack::Less::Base.defaults["#{Rack::Less::Options::RACK_ENV_NS}.#{name}"]
+  end
 
-  context "Given a Sinatra app using Rack::Less" do
-    
+  context "Given a Sinatra app using Rack::Less" do    
     context "with default options," do
       setup do
-        @default = Rack::Less::Options::DEFAULT
         app.use Rack::Less
       end
       
-      context "when a non-existing stylesheet is requested, it" do
+      context "when a non-existing stylesheet is requested," do
         setup do
-          @response = visit "#{@default[:hosted_root]}/does_not_exist.css"
+          @response = visit "#{default_value('hosted_at')}/does_not_exist.css"
         end
 
         should "return '#{Rack::Utils::HTTP_STATUS_CODES[404]}'" do
@@ -25,50 +26,47 @@ class SinatraAppTest < Test::Unit::TestCase
         end      
       end
 
+      context "when a less stylesheet needing compilation is requested," do
+        setup do
+          request_stylesheet "raw.css", "compiled.css"
+        end
+        should_return_compiled_css
+      end
+    end
+    
+    context "with compression and caching" do
+      setup do
+        app.use Rack::Less, :compress => true, :cache => true
+      end
+      setup do
+        request_stylesheet "raw.css", "compiled.css"
+      end
+      teardown do
+        cached_file = File.join(app.public, default_value('hosted_at'), "raw.css")
+        FileUtils.rm(cached_file) if File.exists?(cached_file)
+      end
+
+      should_return_compiled_css
+      
+      should "cache compressed css to a file in the public folder" do
+        pub_path = File.join(app.public, default_value('hosted_at'))
+        assert File.exists?(pub_path), 'the stylesheet hosted folder does not exist'
+        cached_file = File.join(pub_path, @css_name)
+        assert File.exists?(cached_file), 'the css was not cached to a file'
+        cached_compiled = File.open(cached_file) do |file|
+          file.read
+        end
+        assert_equal @compiled.strip.delete!("\n"), cached_compiled.strip, "the compiled css is incorrect"
+      end
     end
 
 =begin
-    context "when requesting a stylesheet needing to be compiled" do
-      setup do
-        @css_name = "raw.css"
-        @compiled = File.open(File.join(app.root, @default[:source_root], "compiled.css")) do |file|
-          file.read
-        end
-        @response = visit "#{@default[:hosted_root]}/#{@css_name}"
-      end
-
-      should "return compiled LESS" do
-        assert_equal 200, @response.status
-        assert_equal Rack::Less::CONTENT_TYPE, @response.headers["Content-Type"]
-        assert_equal @compiled.strip, @response.body.strip
-      end
-
-      context "in production with compression" do
-        setup do
-          app.use Rack::Less :compress => true
-          @response = visit "#{@default[:hosted_root]}/#{@css_name}"
-        end
-
-        should "page cache the compiled css to a public file" do
-          pub_path = File.join(app.public, @default[:hosted_root])
-          assert File.exists?(pub_path)
-          cached_file = File.join(pub_path, @css_name)
-          assert File.exists?(cached_file)
-          cached_compiled = File.open(cached_file) do |file|
-            file.read
-          end
-          assert_equal @compiled.strip.delete!("\n"), cached_compiled.strip
-        end
-      end
-
-    end
-
     context "when requesting a stylesheet not needing to be compiled" do
       setup do
-        @normal = File.open(File.join(app.root, @default[:source_root], 'normal_compiled.css')) do |file|
+        @normal = File.open(File.join(app.root, default_value('source_root'), 'normal_compiled.css')) do |file|
           file.read
         end
-        @response = visit "#{@default[:hosted_root]}/normal.css"
+        @response = visit "#{default_value('hosted_at')}/normal.css"
       end
 
       should "return compiled LESS" do
@@ -78,10 +76,10 @@ class SinatraAppTest < Test::Unit::TestCase
 
     context "when requesting a non LESS stylesheet" do
       setup do
-        @just = File.open(File.join(app.root, @default[:source_root], 'just.css')) do |file|
+        @just = File.open(File.join(app.root, default_value('source_root'), 'just.css')) do |file|
           file.read
         end
-        @response = visit "#{@default[:hosted_root]}/just.css"
+        @response = visit "#{default_value('hosted_at')}/just.css"
       end
 
       should "return just the CSS" do
@@ -94,10 +92,10 @@ class SinatraAppTest < Test::Unit::TestCase
         app.use Rack::Less do |option|
           option.concat 'all' => ['one', 'two']
         end
-        @all = File.open(File.join(app.root, @default[:source_root], 'all_compiled.css')) do |file|
+        @all = File.open(File.join(app.root, default_value('source_root'), 'all_compiled.css')) do |file|
           file.read
         end
-        @response = visit "#{@default[:hosted_root]}/all.css"
+        @response = visit "#{default_value('hosted_at')}/all.css"
       end
 
       should "return concatted LESS" do

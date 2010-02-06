@@ -12,13 +12,14 @@ require 'rack/less/response'
 #
 # Within a rackup file (or with Rack::Builder):
 #   require 'rack/less'
-#   use Rack::Less do |option|
-#     option.compress     true
-#     option.source_root  'app/less'
+#   use Rack::Less do
+#     set :compress,     true
+#     set :source_root,  'app/less'
 #   end
 #   run app
 
 module Rack::Less
+  CONTENT_TYPE = "text/css"
 
   # Create a new Rack::Less middleware component 
   # => the +options+ Hash can be used to specify default configuration values
