@@ -60,7 +60,6 @@ module Rack::Less
       def option_name(key)
         self.class.option_name(key)
       end
-      #module_function :option_name
       
       # The underlying options Hash. During initialization (or outside of a
       # request), this is a default values Hash. During a request, this is the
