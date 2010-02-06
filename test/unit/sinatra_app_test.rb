@@ -1,13 +1,13 @@
 require "test_helper"
-require 'fixtures/test_app'
+require 'fixtures/sinatra/app'
 
-class Rack::LessTest < Test::Unit::TestCase
+class SinatraAppTest < Test::Unit::TestCase
 
   def app
-    @app ||= TestApp
+    @app ||= SinatraApp
   end
 
-  context "Rack::Less" do
+  context "using Rack::Less with Sinatra" do
 
     setup do
       app.set :environment, :development

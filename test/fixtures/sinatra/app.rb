@@ -1,6 +1,6 @@
 require 'sinatra/base'
  
-class TestApp < Sinatra::Base
+class SinatraApp < Sinatra::Base
   
   configure do
     set :root, File.expand_path(File.dirname(__FILE__))
