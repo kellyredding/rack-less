@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'test/unit'
 require 'shoulda'
+require 'rack/test'
+require 'webrat'
 
 # Add test and lib paths to the $LOAD_PATH
 [ File.dirname(__FILE__),
@@ -12,4 +14,13 @@ end
 
 require 'rack/less'
 
-# TODO: setup your test environment here
+class Test::Unit::TestCase
+  include Rack::Test::Methods
+  include Webrat::Methods
+  include Webrat::Matchers
+ 
+  Webrat.configure do |config|
+    config.mode = :rack
+  end
+ 
+end
