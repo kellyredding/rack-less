@@ -35,19 +35,19 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     
 == Available Options
 
-* *source_root['app/stylesheets']*:
+* *source_root*['app/stylesheets']:
   the path (relative to the app root) where LESS files are located
 
-* *hosted_at['/stylesheets']*:
+* *hosted_at*['/stylesheets']:
   the public HTTP root path for stylesheets
 
-* *cache[false]*:
+* *cache*[false]:
   whether to cache the compilation output to a corresponding file in the hosted_root
 
-* *compress[false]*:
+* *compress*[false]:
   whether to remove extraneous whitespace from compilation output
 
-* *concat[{}]*:
+* *concat*[{}]:
   directives for concatenating the ouput of one or more LESS compilations, for example:
     { 'app' => ['one', 'two', 'three'] }
   will direct Rack::Less to respond to a request for app.css with the concatenated output of compiling one.less, two.less, and three.less
