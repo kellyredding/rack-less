@@ -35,10 +35,10 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     
 == Available Options
 
-* source_root:
+* *source_root*:
   the path (relative to the app root) where LESS files are located
 
-* hosted_at:
+* 'hosted_at':
   the public HTTP root path for stylesheets
 
 * cache:
