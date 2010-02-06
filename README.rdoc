@@ -35,9 +35,8 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     
 == Available Options
 
-=== source_root
-
-the path (relative to the app root) where LESS files are located
+source_root
+  the path (relative to the app root) where LESS files are located
 
 === hosted_at
 
@@ -55,19 +54,15 @@ whether to remove extraneous whitespace from compilation output
 
 directives for concatenating the ouput of one or more LESS compilations, for example:
 
-    {
-      'app' => ['one', 'two', 'three']
-    }
+    { 'app' => ['one', 'two', 'three'] }
     
-will respond to a request for app.css with the concatenated output of compiling one.less, two.less, and three.less
+will direct Rack::Less to respond to a request for app.css with the concatenated output of compiling one.less, two.less, and three.less
   
 == Links
 
-GitHub:
-    http://github.com/kelredd/rack-less/
+GitHub: http://github.com/kelredd/rack-less/
     
-Less:
-    http://lesscss.org/
+Less:   http://lesscss.org/
 
 == License
 
