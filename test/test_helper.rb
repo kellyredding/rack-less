@@ -22,8 +22,8 @@ class Test::Unit::TestCase
   def self.should_compile_source(name, desc)
     context desc do
       setup do
-        @compiled = File.read(File.join(@source_path, "#{name}_compiled.css"))
-        @source = Rack::Less::Engine.new(name, :source_path => @source_path)
+        @compiled = File.read(File.join(@source, "#{name}_compiled.css"))
+        @source = Rack::Less::Engine.new(name, :source => @source)
       end
       
       should "compile LESS" do

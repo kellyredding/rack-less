@@ -20,7 +20,7 @@ module Rack::Less
       @compress = options[:compress]
       @cache    = options[:cache]
 
-      @source_path = get_required_path(options, :source_path)
+      @source = get_required_path(options, :source)
     end
     
     def compress?
@@ -76,7 +76,7 @@ module Rack::Less
       file_names.collect do |name|
         PREFERRED_EXTENSIONS.inject(nil) do |source_file, extension|
           source_file || begin
-            path = File.join(@source_path, "#{name}.#{extension}")
+            path = File.join(@source, "#{name}.#{extension}")
             File.exists?(path) ? path : nil
           end
         end

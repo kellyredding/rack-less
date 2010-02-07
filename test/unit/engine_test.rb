@@ -6,19 +6,19 @@ require 'fixtures/mock_options'
 class EngineTest < Test::Unit::TestCase
   context 'Rack::Less::Engine' do
     setup do 
-      @source_path = file_path('test','fixtures','sinatra','app','stylesheets')
+      @source = file_path('test','fixtures','sinatra','app','stylesheets')
       @cache = file_path('test','fixtures','sinatra','public','stylesheets')
     end
 
-    should "require an existing :source_path" do
+    should "require an existing :source" do
       assert_raise ArgumentError do
          Rack::Less::Engine.new('foo')
       end
       assert_raise ArgumentError do
-        Rack::Less::Engine.new('foo', :source_path => file_path('does','not','exist'))
+        Rack::Less::Engine.new('foo', :source => file_path('does','not','exist'))
       end
       assert_nothing_raised do
-        Rack::Less::Engine.new('foo', :source_path => @source_path)
+        Rack::Less::Engine.new('foo', :source => @source)
       end
     end
     
@@ -28,13 +28,13 @@ class EngineTest < Test::Unit::TestCase
     
     context "object" do
       setup do
-        @basic = Rack::Less::Engine.new('basic', :source_path => @source_path)
+        @basic = Rack::Less::Engine.new('basic', :source => @source)
         @compressed = Rack::Less::Engine.new('compressed', {
-          :source_path => @source_path,
+          :source => @source,
           :compress => true
         })
         @cached = Rack::Less::Engine.new('cached', {
-          :source_path => @source_path,
+          :source => @source,
           :cache => @cache,
           :compress => false
         })
@@ -69,7 +69,7 @@ class EngineTest < Test::Unit::TestCase
     
     context "with no corresponding source" do
       setup do
-        @none = Rack::Less::Engine.new('none', :source_path => @source_path)
+        @none = Rack::Less::Engine.new('none', :source => @source)
       end
 
       should "have an empty file list" do
@@ -87,9 +87,9 @@ class EngineTest < Test::Unit::TestCase
 
     context "with compression" do
       setup do
-        @compiled = File.read(File.join(@source_path, "normal_compiled.css"))
+        @compiled = File.read(File.join(@source, "normal_compiled.css"))
         @compressed_normal = Rack::Less::Engine.new('normal', {
-          :source_path => @source_path,
+          :source => @source,
           :compress => true
         })
       end
@@ -102,7 +102,7 @@ class EngineTest < Test::Unit::TestCase
     context "with caching" do
       setup do
         @expected = Rack::Less::Engine.new('normal', {
-          :source_path => @source_path,
+          :source => @source,
           :cache => @cache
         }).to_css
         @cached_file = File.join(@cache, "normal.css")
@@ -120,9 +120,9 @@ class EngineTest < Test::Unit::TestCase
 
     context "that is a combination of multiple files" do
       setup do
-        @compiled = File.read(File.join(@source_path, "all_compiled.css"))
+        @compiled = File.read(File.join(@source, "all_compiled.css"))
         @all = Rack::Less::Engine.new('all', {
-          :source_path => @source_path,
+          :source => @source,
           :concat => {'all' => ['all_one', 'all_two']}
         })
       end
