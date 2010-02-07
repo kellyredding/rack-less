@@ -15,10 +15,10 @@ module Rack::Less
     attr_reader :css_name
     
     def initialize(css_name, options={})
-      @css_name  = css_name
-      @concat    = options[:concat] || {}
-      @compress  = options[:compress]
-      @cache_path = options[:cache_path]
+      @css_name = css_name
+      @concat   = options[:concat] || {}
+      @compress = options[:compress]
+      @cache    = options[:cache]
 
       @source_path = get_required_path(options, :source_path)
     end
@@ -27,7 +27,7 @@ module Rack::Less
       !!@compress
     end
     def cache?
-      !@cache_path.nil?
+      !@cache.nil?
     end
     
     # Use named css sources before using concat directive sources
@@ -42,8 +42,8 @@ module Rack::Less
         end.join("\n")
         
         compiled_css.delete!("\n") if compress?
-        if cache? && !File.exists?(cf = File.join(@cache_path, "#{@css_name}.css"))
-          FileUtils.mkdir_p(@cache_path)
+        if cache? && !File.exists?(cf = File.join(@cache, "#{@css_name}.css"))
+          FileUtils.mkdir_p(@cache)
           File.open(cf, "w") do |file|
             file.write(compiled_css)
           end

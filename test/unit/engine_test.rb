@@ -7,7 +7,7 @@ class EngineTest < Test::Unit::TestCase
   context 'Rack::Less::Engine' do
     setup do 
       @source_path = file_path('test','fixtures','sinatra','app','stylesheets')
-      @cache_path = file_path('test','fixtures','sinatra','public','stylesheets')
+      @cache = file_path('test','fixtures','sinatra','public','stylesheets')
     end
 
     should "require an existing :source_path" do
@@ -35,7 +35,7 @@ class EngineTest < Test::Unit::TestCase
         })
         @cached = Rack::Less::Engine.new('cached', {
           :source_path => @source_path,
-          :cache_path => @cache_path,
+          :cache => @cache,
           :compress => false
         })
       end
@@ -103,16 +103,16 @@ class EngineTest < Test::Unit::TestCase
       setup do
         @expected = Rack::Less::Engine.new('normal', {
           :source_path => @source_path,
-          :cache_path => @cache_path
+          :cache => @cache
         }).to_css
-        @cached_file = File.join(@cache_path, "normal.css")
+        @cached_file = File.join(@cache, "normal.css")
       end
       teardown do
         FileUtils.rm(@cached_file) if File.exists?(@cached_file)
       end
 
       should "store the compiled css to a file in the cache" do
-        assert File.exists?(@cache_path), 'the cache folder does not exist'
+        assert File.exists?(@cache), 'the cache folder does not exist'
         assert File.exists?(@cached_file), 'the css was not cached to a file'
         assert_equal @expected.strip, File.read(@cached_file).strip, "the compiled css is incorrect"
       end
