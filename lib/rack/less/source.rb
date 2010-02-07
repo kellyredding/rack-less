@@ -6,7 +6,7 @@ module Rack::Less
   # Given the name of the css you want to compile
   # and a path the the sources files, call .to_css
   # to return corresponding compiled LESS CSS
-  class Engine
+  class Source
     
     # prefer source files with the .less extension
     # but also accept files with the .css extension
@@ -19,7 +19,6 @@ module Rack::Less
       @concat   = options[:concat] || {}
       @compress = options[:compress]
       @cache    = options[:cache]
-
       @source = get_required_path(options, :source)
     end
     

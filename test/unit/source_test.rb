@@ -3,8 +3,8 @@ require 'rack/less/options'
 require 'rack/less/engine'
 require 'fixtures/mock_options'
 
-class EngineTest < Test::Unit::TestCase
-  context 'Rack::Less::Engine' do
+class SourceTest < Test::Unit::TestCase
+  context 'Rack::Less::Source' do
     setup do 
       @source = file_path('test','fixtures','sinatra','app','stylesheets')
       @cache = file_path('test','fixtures','sinatra','public','stylesheets')
@@ -12,28 +12,28 @@ class EngineTest < Test::Unit::TestCase
 
     should "require an existing :source" do
       assert_raise ArgumentError do
-         Rack::Less::Engine.new('foo')
+         Rack::Less::Source.new('foo')
       end
       assert_raise ArgumentError do
-        Rack::Less::Engine.new('foo', :source => file_path('does','not','exist'))
+        Rack::Less::Source.new('foo', :source => file_path('does','not','exist'))
       end
       assert_nothing_raised do
-        Rack::Less::Engine.new('foo', :source => @source)
+        Rack::Less::Source.new('foo', :source => @source)
       end
     end
     
     should "accept both .less and .css extensions, prefering .less over .css though" do
-      assert_equal [:less, :css], Rack::Less::Engine::PREFERRED_EXTENSIONS
+      assert_equal [:less, :css], Rack::Less::Source::PREFERRED_EXTENSIONS
     end
     
     context "object" do
       setup do
-        @basic = Rack::Less::Engine.new('basic', :source => @source)
-        @compressed = Rack::Less::Engine.new('compressed', {
+        @basic = Rack::Less::Source.new('basic', :source => @source)
+        @compressed = Rack::Less::Source.new('compressed', {
           :source => @source,
           :compress => true
         })
-        @cached = Rack::Less::Engine.new('cached', {
+        @cached = Rack::Less::Source.new('cached', {
           :source => @source,
           :cache => @cache,
           :compress => false
@@ -69,7 +69,7 @@ class EngineTest < Test::Unit::TestCase
     
     context "with no corresponding source" do
       setup do
-        @none = Rack::Less::Engine.new('none', :source => @source)
+        @none = Rack::Less::Source.new('none', :source => @source)
       end
 
       should "have an empty file list" do
@@ -88,7 +88,7 @@ class EngineTest < Test::Unit::TestCase
     context "with compression" do
       setup do
         @compiled = File.read(File.join(@source, "normal_compiled.css"))
-        @compressed_normal = Rack::Less::Engine.new('normal', {
+        @compressed_normal = Rack::Less::Source.new('normal', {
           :source => @source,
           :compress => true
         })
@@ -101,7 +101,7 @@ class EngineTest < Test::Unit::TestCase
 
     context "with caching" do
       setup do
-        @expected = Rack::Less::Engine.new('normal', {
+        @expected = Rack::Less::Source.new('normal', {
           :source => @source,
           :cache => @cache
         }).to_css
@@ -121,7 +121,7 @@ class EngineTest < Test::Unit::TestCase
     context "that is a combination of multiple files" do
       setup do
         @compiled = File.read(File.join(@source, "all_compiled.css"))
-        @all = Rack::Less::Engine.new('all', {
+        @all = Rack::Less::Source.new('all', {
           :source => @source,
           :concat => {'all' => ['all_one', 'all_two']}
         })

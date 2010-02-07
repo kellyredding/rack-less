@@ -23,7 +23,7 @@ class Test::Unit::TestCase
     context desc do
       setup do
         @compiled = File.read(File.join(@source, "#{name}_compiled.css"))
-        @source = Rack::Less::Engine.new(name, :source => @source)
+        @source = Rack::Less::Source.new(name, :source => @source)
       end
       
       should "compile LESS" do
