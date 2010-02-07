@@ -25,14 +25,17 @@ module Rack::Less
     end
 
     # The real Rack call interface.
+    # if LESS CSS is being requested, this is an endpoint:
+    # => generate the compiled css
+    # => respond appropriately
+    # Otherwise, call on up to the app as normal
     def call!(env)
       @default_options.each { |k,v| env[k] ||= v }
       @env = env
       # TODO: get this going
-      if (@request = Request.new(@env.dup.freeze)).is_for_less_css?
-        # compile less appropriately
-        #response = 
-        #response.to_a
+      
+      if (@request = Request.new(@env.dup.freeze)).for_less?
+        #Response.new(@env.dup.freeze, @request.engine.to_css).to_a
       else
         @app.call(env)
       end

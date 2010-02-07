@@ -1,4 +1,6 @@
 require 'rack/request'
+require 'rack/less/options'
+require 'rack/less/source'
 
 module Rack::Less
 
@@ -16,9 +18,30 @@ module Rack::Less
     def request_method
       @env['REQUEST_METHOD']
     end
+    
+    def path_info
+      @env['PATH_INFO']
+    end
 
-    def is_for_less_css?
+    # Determine if the request is for existing LESS CSS file
+    # This will be called on every request so speed is an issue
+    # => first check if the request is for a css file (fast)
+    # => then check for less source files that match the request (slow)
+    def for_less?
+      p "req: #{self.path_info}"
+      # for_css? && !engine.files.empty?
       false
     end
+    
+    # TODO: get this going
+    # Determine if the request is for a css file
+    def for_css?
+    end
+    
+    def source
+      # TODO: setup env stuff to init Source class
+      #@source ||= Source.new(self.dup)
+    end
+
   end
 end

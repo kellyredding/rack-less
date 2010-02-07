@@ -22,11 +22,12 @@ class Test::Unit::TestCase
   def self.should_compile_source(name, desc)
     context desc do
       setup do
-        @compiled = File.read(File.join(@source, "#{name}_compiled.css"))
-        @source = Rack::Less::Source.new(name, :source => @source)
+        @compiled = File.read(File.join(@source_folder, "#{name}_compiled.css"))
+        @source = Rack::Less::Source.new(name, :folder => @source_folder)
       end
       
       should "compile LESS" do
+        assert_equal @compiled.strip, @source.compiled.strip, '.compiled is incorrect'
         assert_equal @compiled.strip, @source.to_css.strip, '.to_css is incorrect'
         assert_equal @compiled.strip, @source.css.strip, '.css is incorrect'
       end

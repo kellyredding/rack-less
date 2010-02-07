@@ -3,9 +3,9 @@ require 'less'
 module Rack::Less
 
   # The engine for compiling LESS CSS
-  # Given the name of the css you want to compile
-  # and a path the the sources files, call .to_css
-  # to return corresponding compiled LESS CSS
+  # Given the name of the less source file you want
+  # to compile and a path to the source files,
+  # will returns corresponding compiled LESS CSS
   class Source
     
     # prefer source files with the .less extension
@@ -19,7 +19,7 @@ module Rack::Less
       @concat   = options[:concat] || {}
       @compress = options[:compress]
       @cache    = options[:cache]
-      @source = get_required_path(options, :source)
+      @folder   = get_required_path(options, :folder)
     end
     
     def compress?
@@ -34,8 +34,8 @@ module Rack::Less
       @files ||= (css_sources.empty? ? concat_sources : css_sources)
     end
     
-    def to_css
-      @css ||= begin
+    def compiled
+      @compiled ||= begin
         compiled_css = files.collect do |file_path|
           Less::Engine.new(File.new(file_path)).to_css
         end.join("\n")
@@ -51,7 +51,8 @@ module Rack::Less
         compiled_css
       end
     end
-    alias_method :css, :to_css
+    alias_method :to_css, :compiled
+    alias_method :css, :compiled
     
     protected
     
@@ -75,7 +76,7 @@ module Rack::Less
       file_names.collect do |name|
         PREFERRED_EXTENSIONS.inject(nil) do |source_file, extension|
           source_file || begin
-            path = File.join(@source, "#{name}.#{extension}")
+            path = File.join(@folder, "#{name}.#{extension}")
             File.exists?(path) ? path : nil
           end
         end

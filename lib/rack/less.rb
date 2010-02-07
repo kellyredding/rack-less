@@ -3,6 +3,7 @@ require 'rack/less/base'
 require 'rack/less/options'
 require 'rack/less/request'
 require 'rack/less/response'
+require 'rack/less/source'
 
 # === Usage
 #
