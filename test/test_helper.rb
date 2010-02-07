@@ -11,3 +11,26 @@ require 'shoulda'
 end
 
 require 'rack/less'
+
+class Test::Unit::TestCase
+  
+  def file_path(*segments)
+    segs = segments.unshift([File.dirname(__FILE__), '..']).flatten
+    File.expand_path(segs.join(File::SEPARATOR))
+  end
+  
+  def self.should_compile_source(name, desc)
+    context desc do
+      setup do
+        @compiled = File.read(File.join(@source_path, "#{name}_compiled.css"))
+        @source = Rack::Less::Engine.new(name, :source_path => @source_path)
+      end
+      
+      should "compile LESS" do
+        assert_equal @compiled.strip, @source.to_css.strip, '.to_css is incorrect'
+        assert_equal @compiled.strip, @source.css.strip, '.css is incorrect'
+      end
+    end
+  end
+  
+end
