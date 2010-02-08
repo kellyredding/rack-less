@@ -10,6 +10,7 @@ module Rack::Less
       @app = app
       initialize_options options
       yield self if block_given?
+      validate_options
     end
 
     # The Rack call interface. The receiver acts as a prototype and runs
@@ -38,6 +39,27 @@ module Rack::Less
         Response.new(@env.dup.freeze, @request.source.to_css).to_rack
       else
         @app.call(env)
+      end
+    end
+    
+    private
+    
+    def validate_options
+      # ensure a root path is specified and does exists
+      unless options.has_key?(option_name(:root)) and !options(:root).nil?
+        raise(ArgumentError, "no :root option set")
+      end
+      unless File.exists?(options(:root))
+        raise(ArgumentError, "the :root path ('#{options(:root)}') does not exist") 
+      end
+
+      # ensure a source path is specified and does exists
+      unless options.has_key?(option_name(:source)) and !options(:source).nil?
+        raise(ArgumentError, "no :source option set")
+      end
+      source_path = File.join(options(:root), options(:source))
+      unless File.exists?(source_path)
+        raise(ArgumentError, "the :source path ('#{source_path}') does not exist") 
       end
     end
 
