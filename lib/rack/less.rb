@@ -21,7 +21,7 @@ require 'rack/less/source'
 #   run app
 
 module Rack::Less
-  MEDIA_TYPE = "text/css"
+  MIME_TYPE = "text/css"
   
   class << self
     

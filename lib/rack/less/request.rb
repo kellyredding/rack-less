@@ -28,7 +28,10 @@ module Rack::Less
       @env['PATH_INFO']
     end
     
-    # TODO: test these
+    def http_accept
+      @env['HTTP_ACCEPT']
+    end
+    
     def path_resource_name
       path_info =~ CSS_PATH_REGEX ? path_info.match(CSS_PATH_REGEX)[1] : nil
     end
@@ -48,15 +51,17 @@ module Rack::Less
         source_opts = {
           :folder   => File.join(options(:root), options(:source)),
           :cache    => cache,
-          :compress => options(:compress),
-          :combine  => options(:combine)
+          :compress => options(:compress)
         }
         Source.new(path_resource_name, source_opts)
       end
     end
 
     def for_css?
-      media_type == Rack::Less::MEDIA_TYPE ||
+      p "ha: #{http_accept.inspect}"
+      p "mt: #{media_type.inspect}"
+      (http_accept && http_accept.include?(Rack::Less::MIME_TYPE)) ||
+      (media_type  && media_type.include?(Rack::Less::MIME_TYPE )) ||
       CSS_PATH_FORMATS.include?(path_resource_format)
     end
 

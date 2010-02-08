@@ -27,9 +27,9 @@ class RequestTest < Test::Unit::TestCase
       assert_equal 200, @response.status
     end
 
-    should "set it's Content-Type to '#{Rack::Less::MEDIA_TYPE}'" do 
-      assert_equal Rack::Less::MEDIA_TYPE, @response.content_type, 'the content_type accessor is incorrect'
-      assert_equal Rack::Less::MEDIA_TYPE, @response.headers['Content-Type'], 'the Content-Type header is incorrect'
+    should "set it's Content-Type to '#{Rack::Less::MIME_TYPE}'" do 
+      assert_equal Rack::Less::MIME_TYPE, @response.content_type, 'the content_type accessor is incorrect'
+      assert_equal Rack::Less::MIME_TYPE, @response.headers['Content-Type'], 'the Content-Type header is incorrect'
     end
 
     should "set it's Content-Length appropriately" do

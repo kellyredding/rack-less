@@ -33,7 +33,7 @@ module Rack::Less
       @status = 200 # OK
       @headers = Rack::Utils::HeaderHash.new
 
-      headers["Content-Type"] = Rack::Less::MEDIA_TYPE
+      headers["Content-Type"] = Rack::Less::MIME_TYPE
       headers["Content-Length"] = self.class.content_length(body).to_s
     end
     
