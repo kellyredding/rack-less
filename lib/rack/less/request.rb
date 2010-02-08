@@ -58,8 +58,6 @@ module Rack::Less
     end
 
     def for_css?
-      p "ha: #{http_accept.inspect}"
-      p "mt: #{media_type.inspect}"
       (http_accept && http_accept.include?(Rack::Less::MIME_TYPE)) ||
       (media_type  && media_type.include?(Rack::Less::MIME_TYPE )) ||
       CSS_PATH_FORMATS.include?(path_resource_format)
