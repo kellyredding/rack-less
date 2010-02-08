@@ -34,22 +34,22 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     rake middleware
     
 == Available Options
-[<default_value>]
+[] - denotes the default option value
 
 * *root* ["."]:
   the app root. the reference point for the source and public options.
 
 * *source* ['app/stylesheets']:
-  the path (relative to the root) where LESS files are located
+  the path (relative to the root) where LESS source files are located
 
 * *public* ['public']:
-  the path (relative to the root) where LESS files are located
+  the path (relative to the root) static files are located
 
 * *hosted_at* ['/stylesheets']:
-  the public HTTP root path for stylesheets
+  the public HTTP path for hosted stylesheets
 
 * *cache* [false]:
-  whether to cache the compilation output to a corresponding file in the hosted_root
+  whether to cache the compilation output to a corresponding file in the public folder hosted_at path
 
 * *compress* [false]:
   whether to remove extraneous whitespace from compilation output
