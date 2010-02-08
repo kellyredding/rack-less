@@ -70,11 +70,6 @@ would service the above stylesheet_link_tag.  Even better, you could re-factor t
 
     stylesheet_link_tag Rack::Less.combinations['app'], :cache => 'app'
 
-* *combine* [{}]:
-  directives for combining the ouput of one or more LESS compilations, for example:
-    { 'app' => ['one', 'two', 'three'] }
-  will direct Rack::Less to respond to a request for app.css with the concatenated output of compiling one.less, two.less, and three.less
-  
 == Links
 
 GitHub: http://github.com/kelredd/rack-less
