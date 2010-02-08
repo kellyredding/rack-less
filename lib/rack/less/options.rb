@@ -27,9 +27,9 @@ module Rack::Less
     #    will respond to a request for app.css with the concatenated
     #    output of compiling one.less, two.less, and three.less
     
-    # Note: the following code is more or less a rip from:
+    # Note: the following code is heavily influenced by:
     # => http://github.com/rtomayko/rack-cache/blob/master/lib/rack/cache/options.rb
-    # => thanks to rtomayko, I thought this approach was really smart and the credit is his.
+    # => thanks to rtomayko, I thought his approach was really smart.
     
     RACK_ENV_NS = "rack-less"
     
@@ -92,10 +92,8 @@ module Rack::Less
       # exactly as specified. The +option+ argument may also be a Hash in
       # which case each key/value pair is merged into the environment as if
       # the #set method were called on each.
-      def set(option, value=nil, &block)
-        if block_given?
-          write_option option, block
-        elsif value.nil?
+      def set(option, value=nil)
+        if value.nil?
           self.options = option.to_hash
         else
           write_option option, value

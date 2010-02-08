@@ -13,11 +13,11 @@ require 'rack/less/source'
 #
 # Within a rackup file (or with Rack::Builder):
 #   require 'rack/less'
-#   use Rack::Less do
-#     set :root,     "."
-#     set :source,   'app/less'
-#     set :compress, true
-#   end
+#
+#   use Rack::Less,
+#     :source   => 'app/less'
+#     :compress => true
+#
 #   run app
 
 module Rack::Less

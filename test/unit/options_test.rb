@@ -59,11 +59,5 @@ class OptionsTest < Test::Unit::TestCase
       assert_equal 'baz', @options.options['foo.bar']
     end
 
-    should "allow storing the value as a block" do
-      block = Proc.new { "bar block" }
-      @options.set(:foo, &block)
-      assert_equal block, @options.options[MockOptions.option_name(:foo)]
-    end
-
   end
 end

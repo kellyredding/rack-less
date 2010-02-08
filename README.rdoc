@@ -16,11 +16,11 @@ or uses Rack::Builder to construct the application pipeline, simply require
 and use as follows:
 
     require 'rack/less'
-    use Rack::Less do
-      set :source,    'app/less'
-      set :hosted_at, '/'
-      set :compress,  true
-    end
+
+    use Rack::Less,
+      :source   => 'app/less'
+      :compress => true
+
     run app
 
 == Using with Rails
@@ -35,27 +35,27 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     
 == Available Options
 
-* *root*["."]:
+* *root* ["."]:
   the app root. the reference point for the source and public options.  #TODO: default appropriately for Rails/Sinatra.
 
-* *source*['app/stylesheets']:
+* *source* ['app/stylesheets']:
   the path (relative to the root) where LESS files are located
 
-* *public*['public']:
+* *public* ['public']:
   the path (relative to the root) where LESS files are located
 
-* *hosted_at*['/stylesheets']:
+* *hosted_at* ['/stylesheets']:
   the public HTTP root path for stylesheets
 
-* *cache*[false]:
+* *cache* [false]:
   whether to cache the compilation output to a corresponding file in the hosted_root
 
-* *compress*[false]:
+* *compress* [false]:
   whether to remove extraneous whitespace from compilation output
 
-* *combinations*[{}]:
+* *combine* [{}]:
   directives for combining the ouput of one or more LESS compilations, for example:
-    set :combine, { 'app' => ['one', 'two', 'three'] }
+    { 'app' => ['one', 'two', 'three'] }
   will direct Rack::Less to respond to a request for app.css with the concatenated output of compiling one.less, two.less, and three.less
   
 == Links
