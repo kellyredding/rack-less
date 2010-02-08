@@ -1,4 +1,4 @@
-require 'test_helper'
+require "#{File.dirname(__FILE__)}/../test_helper"
 require 'rack/less/source'
 
 class SourceTest < Test::Unit::TestCase
@@ -59,7 +59,7 @@ class SourceTest < Test::Unit::TestCase
         assert_kind_of Array, @basic.files, 'the engine files is not an Array'
       end
 
-      should "be have compiled css" do
+      should "have compiled css" do
         assert_respond_to @basic, :to_css, 'engine does not respond to :to_css'
         assert_respond_to @basic, :css, 'engine does not respond to :css'
       end
@@ -121,6 +121,7 @@ class SourceTest < Test::Unit::TestCase
         @compiled = File.read(File.join(@source_folder, "all_compiled.css"))
         @all = Rack::Less::Source.new('all', {
           :folder => @source_folder,
+          # TODO: do the concat stuff differently
           :concat => {'all' => ['all_one', 'all_two']}
         })
       end

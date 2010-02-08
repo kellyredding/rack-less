@@ -34,4 +34,42 @@ class Test::Unit::TestCase
     end
   end
   
+  def less_request(method, path_info)
+    Rack::Less::Request.new(@defaults.merge({
+      'REQUEST_METHOD' => method,
+      'PATH_INFO' => path_info
+    }))
+  end
+  
+  def self.should_not_be_a_valid_rack_less_request(args)
+    context "to #{args[:method].upcase} #{args[:resource]} (#{args[:description]})" do
+      setup do 
+        @request = less_request(args[:method], args[:resource])
+      end
+      
+      should "not be a valid endpoint for Rack::Less" do
+        not_valid = !@request.get?
+        not_valid ||= !@request.for_css?
+        not_valid ||= @request.source.files.empty?
+        assert not_valid, 'request is a GET for .css format and has source'
+        assert !@request.for_less?, 'the request is for less'
+      end
+    end
+  end
+  def self.should_be_a_valid_rack_less_request(args)
+    context "to #{args[:method].upcase} #{args[:resource]} (#{args[:desc]})" do
+      setup do 
+        @request = less_request(args[:method], args[:resource])
+      end
+      
+      should "be a valid endpoint for Rack::Less" do
+        assert @request.get?, 'the request is not a GET'
+        assert @request.for_css?, 'the request is not for css'
+        assert !@request.source.files.empty?, 'the request resource has not source'
+        assert @request.for_css?, 'the request is not for css'
+        assert @request.for_less?, 'the request is not for less'
+      end
+    end
+  end
+  
 end

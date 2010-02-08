@@ -20,7 +20,7 @@ require 'rack/less/source'
 #   run app
 
 module Rack::Less
-  CONTENT_TYPE = "text/css"
+  MEDIA_TYPE = "text/css"
 
   # Create a new Rack::Less middleware component 
   # => the +options+ Hash can be used to specify default configuration values
