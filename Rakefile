@@ -17,13 +17,13 @@ spec = Gem::Specification.new do |s|
   s.files            = %w(README.rdoc Rakefile) + Dir.glob("{lib}/**/*")
   # s.executables    = ['rack-less']
 
-  s.add_dependency("rack", ["~> 0.4"])
-  s.add_dependency("less", ["~> 1.2.21"])
+  s.add_dependency("rack", [">= 0.4"])
+  s.add_dependency("less", [">= 1.2.21"])
 
-  s.add_development_dependency("shoulda", ["~> 2.10.2"])
-  s.add_development_dependency("sinatra", ["~> 0.9.4"])
-  s.add_development_dependency("rack-test", ["~> 0.5.3"])
-  s.add_development_dependency("webrat", ["~> 0.6.0"])
+  s.add_development_dependency("shoulda", [">= 2.10.2"])
+  s.add_development_dependency("sinatra", [">= 0.9.4"])
+  s.add_development_dependency("rack-test", [">= 0.5.3"])
+  s.add_development_dependency("webrat", [">= 0.6.0"])
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
