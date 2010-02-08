@@ -20,12 +20,6 @@ module Rack::Less
     # => compress
     #    whether to remove extraneous whitespace from
     #    compilation output
-    # => combine
-    #    expects a hash containing directives for combining
-    #    the ouput of one or more LESS compilations, for example:
-    #    { 'app' => ['one', 'two', 'three']}
-    #    will respond to a request for app.css with the concatenated
-    #    output of compiling one.less, two.less, and three.less
     
     # Note: the following code is heavily influenced by:
     # => http://github.com/rtomayko/rack-cache/blob/master/lib/rack/cache/options.rb
@@ -42,8 +36,7 @@ module Rack::Less
           option_name(:public)    => 'public',
           option_name(:hosted_at) => '/stylesheets',
           option_name(:cache)     => false,
-          option_name(:compress)  => false,
-          option_name(:combine)   => {}
+          option_name(:compress)  => false
         }
       end
 
@@ -56,6 +49,21 @@ module Rack::Less
         when String ; key
         else raise ArgumentError
         end
+      end
+      
+      # Rack::Less uses combinations to combine the output of many stylesheets
+      # and serve them as a single resource.  Combinations are specified using
+      # a hash, where the key is the combined resource name and the value is an
+      # array of stylesheets to combine as that resource.  For example:
+      # Rack::Less.combinations = {
+      #   'app' => ['one', 'two']
+      # }
+      @@combinations = {}
+      def combinations
+        @@combinations || {}
+      end
+      def combinations=(value={})
+        @@combinations = value
       end
       
     end

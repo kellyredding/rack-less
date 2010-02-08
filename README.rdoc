@@ -27,16 +27,17 @@ and use as follows:
 
 Add this to your `config/environment.rb`:
 
-    config.middleware.use Rack::Less, :compress => true
+    config.middleware.use "Rack::Less"
 
 You should now see `Rack::Less` listed in the middleware pipeline:
 
     rake middleware
     
 == Available Options
+[<default_value>]
 
 * *root* ["."]:
-  the app root. the reference point for the source and public options.  #TODO: default appropriately for Rails/Sinatra.
+  the app root. the reference point for the source and public options.
 
 * *source* ['app/stylesheets']:
   the path (relative to the root) where LESS files are located
@@ -52,6 +53,22 @@ You should now see `Rack::Less` listed in the middleware pipeline:
 
 * *compress* [false]:
   whether to remove extraneous whitespace from compilation output
+  
+== Combinations
+
+At times, it is useful to combine many stylesheets and serve them as one resource.  Rails' has a helper for this:
+
+    stylesheet_link_tag 'one', two', :cache => 'app'
+    
+Rack::Less supports this concept by providing combinations.  Combinations are specified using a hash, where the key is the combined resource name and the value is an array of stylesheets to combine as that resource.  For example:
+
+    Rack::Less.combinations = {
+      'app' => ['one', 'two']
+    }
+
+would service the above stylesheet_link_tag.  Even better, you could re-factor the stylesheet_link_tag as follows to DRY it up:
+
+    stylesheet_link_tag Rack::Less.combinations['app'], :cache => 'app'
 
 * *combine* [{}]:
   directives for combining the ouput of one or more LESS compilations, for example:

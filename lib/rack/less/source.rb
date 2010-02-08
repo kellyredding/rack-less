@@ -19,7 +19,6 @@ module Rack::Less
       @compress = options[:compress]
       @cache    = options[:cache]
       @folder   = get_required_path(options, :folder)
-      @combine  = options[:combine] || {}
     end
     
     def compress?
@@ -29,9 +28,9 @@ module Rack::Less
       !@cache.nil?
     end
     
-    # Use named css sources before using combine directive sources
+    # Use named css sources before using combination sources
     def files
-      @files ||= (css_sources.empty? ? combined_sources : css_sources)
+      @files ||= (css_sources.empty? ? combination_sources : css_sources)
     end
     
     def compiled
@@ -62,9 +61,9 @@ module Rack::Less
     end
     
     # Preferred, existing source files matching a corresponding
-    # combine directive, if any
-    def combined_sources
-      @combined_sources ||= preferred_sources(@combine[@css_name] || [])
+    # Rack::Less::Base combination directive, if any
+    def combination_sources
+      @combination_sources ||= preferred_sources(Base.combinations[@css_name] || [])
     end
     
     private

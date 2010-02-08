@@ -22,6 +22,18 @@ require 'rack/less/source'
 
 module Rack::Less
   MEDIA_TYPE = "text/css"
+  
+  class << self
+    
+    # Proxy calls to Base.combinations
+    def combinations
+      Rack::Less::Base.combinations
+    end
+    def combinations=(value={})
+      Rack::Less::Base.combinations = value
+    end
+
+  end
 
   # Create a new Rack::Less middleware component 
   # => the +options+ Hash can be used to specify default configuration values

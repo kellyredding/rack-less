@@ -29,11 +29,32 @@ class OptionsTest < Test::Unit::TestCase
       :public => 'public',
       :hosted_at => '/stylesheets',
       :cache => false,
-      :compress => false,
-      :combine => {}
+      :compress => false
     }.each do |k,v|
       should "default #{k} correctly" do
         assert_equal v, @options.options[MockOptions.option_name(k)]
+      end
+    end
+    
+    context "#combinations" do
+      setup { @combinations_before = MockOptions.combinations }
+      teardown { MockOptions.combinations = @combinations_before }
+      
+
+      should "be readable" do
+        assert_respond_to MockOptions, :combinations
+      end
+
+      should "default to an empty Hash" do
+        hash = {}
+        assert_equal hash, MockOptions.combinations
+      end
+      
+      should "be writable" do
+        assert_respond_to MockOptions, :combinations=
+        hash = {'app' => ['one', 'two']}
+        MockOptions.combinations = hash
+        assert_equal hash, MockOptions.combinations
       end
     end
 
