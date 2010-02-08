@@ -33,12 +33,22 @@ class Test::Unit::TestCase
       end
     end
   end
+
+  def env_defaults
+    Rack::Less::Base.defaults.merge({
+      Rack::Less::Base.option_name(:root) => file_path('test','fixtures','sinatra')
+    })
+  end
   
   def less_request(method, path_info)
     Rack::Less::Request.new(@defaults.merge({
       'REQUEST_METHOD' => method,
       'PATH_INFO' => path_info
     }))
+  end
+  
+  def less_response(css)
+    Rack::Less::Response.new(@defaults, css)
   end
   
   def self.should_not_be_a_valid_rack_less_request(args)

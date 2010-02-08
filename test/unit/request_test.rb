@@ -5,9 +5,7 @@ class RequestTest < Test::Unit::TestCase
 
   context 'Rack::Less::Request' do
     setup do 
-      @defaults = Rack::Less::Base.defaults.merge({
-        Rack::Less::Base.option_name(:root) => file_path('test','fixtures','sinatra')
-      })
+      @defaults = env_defaults
     end
     
     context "basic object" do

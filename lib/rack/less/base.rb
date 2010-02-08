@@ -35,7 +35,7 @@ module Rack::Less
       # TODO: get this going
       
       if (@request = Request.new(@env.dup.freeze)).for_less?
-        #Response.new(@env.dup.freeze, @request.engine.to_css).to_a
+        Response.new(@env.dup.freeze, @request.source.to_css).to_rack
       else
         @app.call(env)
       end

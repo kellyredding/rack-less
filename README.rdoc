@@ -55,7 +55,7 @@ You should now see `Rack::Less` listed in the middleware pipeline:
 
 * *combinations*[{}]:
   directives for combining the ouput of one or more LESS compilations, for example:
-    { 'app' => ['one', 'two', 'three'] }
+    set :combine, { 'app' => ['one', 'two', 'three'] }
   will direct Rack::Less to respond to a request for app.css with the concatenated output of compiling one.less, two.less, and three.less
   
 == Links
