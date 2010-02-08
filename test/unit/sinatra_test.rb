@@ -28,28 +28,28 @@ class SinatraTest < Test::Unit::TestCase
     
     should "fail when :root option does not exist" do
       assert_raise ArgumentError do
-        app.use Rack::Less do |base|
-          base.set :root, file_path('test','fixtures','wtf')
-        end
+        app.use Rack::Less,
+          :root => file_path('test','fixtures','wtf')
+        
         visit "/"
       end
     end
     
     should "fail when :source option does not exist" do
       assert_raise ArgumentError do
-        app.use Rack::Less do |base|
-          base.set :root, file_path('test','fixtures','sinatra')
-          base.set :source, 'wtf'
-        end
+        app.use Rack::Less,
+          :root   => file_path('test','fixtures','sinatra'),
+          :source => 'wtf'
+        
         visit "/"
       end
     end
     
     context "requesting valid LESS" do
       setup do
-        app.use Rack::Less do |base|
-          base.set :root, file_path('test','fixtures','sinatra')
-        end
+        app.use Rack::Less,
+          :root => file_path('test','fixtures','sinatra')
+        
         @compiled = File.read(file_path('test','fixtures','sinatra','app','stylesheets', 'normal_compiled.css'))
         @response = visit "/stylesheets/normal.css"
       end
