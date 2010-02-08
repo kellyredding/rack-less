@@ -57,7 +57,7 @@ class Test::Unit::TestCase
     end
   end
   def self.should_be_a_valid_rack_less_request(args)
-    context "to #{args[:method].upcase} #{args[:resource]} (#{args[:desc]})" do
+    context "to #{args[:method].upcase} #{args[:resource]} (#{args[:description]})" do
       setup do 
         @request = less_request(args[:method], args[:resource])
       end
@@ -65,7 +65,7 @@ class Test::Unit::TestCase
       should "be a valid endpoint for Rack::Less" do
         assert @request.get?, 'the request is not a GET'
         assert @request.for_css?, 'the request is not for css'
-        assert !@request.source.files.empty?, 'the request resource has not source'
+        assert !@request.source.files.empty?, 'the request resource has no source'
         assert @request.for_css?, 'the request is not for css'
         assert @request.for_less?, 'the request is not for less'
       end

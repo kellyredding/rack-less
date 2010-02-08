@@ -1,5 +1,6 @@
 require 'rack/request'
 require 'rack/less'
+require 'rack/less/options'
 require 'rack/less/source'
 
 module Rack::Less
@@ -10,6 +11,7 @@ module Rack::Less
   # => from: http://github.com/rtomayko/rack-cache/blob/master/lib/rack/cache/request.rb
 
   class Request < Rack::Request
+    include Rack::Less::Options
     
     CSS_PATH_REGEX = /\A.*\/(\w+)\.(\w+)\Z/
     CSS_PATH_FORMATS = ['css']
@@ -35,12 +37,22 @@ module Rack::Less
       path_info =~ CSS_PATH_REGEX ? path_info.match(CSS_PATH_REGEX)[2] : nil
     end
 
-    # The Rack::Less::Source the request if for
+    # The Rack::Less::Source that the request is for
     def source
-      # TODO: setup env stuff to init Source class
-      #@source ||= Source.new(path_resource_name, {
-      #  :folder => 
-      #})
+      @source ||= begin
+        cache = if options(:cache)
+          File.join(options(:root), options(:public), options(:hosted_at))
+        else
+          nil
+        end
+        source_opts = {
+          :folder   => File.join(options(:root), options(:source)),
+          :cache    => cache,
+          :compress => options(:compress),
+          :combine  => options(:combine)
+        }
+        Source.new(path_resource_name, source_opts)
+      end
     end
 
     def for_css?
@@ -53,7 +65,7 @@ module Rack::Less
     # => first check if the request is a GET on a css resource (fast)
     # => then check for less source files that match the request (slow)
     def for_less?
-      get? && for_css? #&& !source.files.empty?
+      get? && for_css? && !source.files.empty?
     end
     
   end

@@ -121,8 +121,7 @@ class SourceTest < Test::Unit::TestCase
         @compiled = File.read(File.join(@source_folder, "all_compiled.css"))
         @all = Rack::Less::Source.new('all', {
           :folder => @source_folder,
-          # TODO: do the concat stuff differently
-          :concat => {'all' => ['all_one', 'all_two']}
+          :combine => {'all' => ['all_one', 'all_two']}
         })
       end
 

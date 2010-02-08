@@ -18,11 +18,19 @@ class OptionsTest < Test::Unit::TestCase
       assert_respond_to MockOptions, :defaults
     end
     
-    { :source_root => 'app/stylesheets',
+    should "allow access to the options" do
+      assert_respond_to @options, :options, 'no #options accessor'
+      assert_kind_of Hash, @options.options, '#options is not a Hash'
+      assert_equal MockOptions.defaults[MockOptions.option_name(:source)], @options.options(:source)
+    end
+    
+    { :root => nil,
+      :source => 'app/stylesheets',
+      :public => 'public',
       :hosted_at => '/stylesheets',
       :cache => false,
       :compress => false,
-      :concat => {}
+      :combine => {}
     }.each do |k,v|
       should "default #{k} correctly" do
         assert_equal v, @options.options[MockOptions.option_name(k)]

@@ -35,8 +35,14 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     
 == Available Options
 
-* *source_root*['app/stylesheets']:
-  the path (relative to the app root) where LESS files are located
+* *root*[nil]:
+  the app root. the reference point for the source and public options.  #TODO: default appropriately for Rails/Sinatra.
+
+* *source*['app/stylesheets']:
+  the path (relative to the root) where LESS files are located
+
+* *public*['public']:
+  the path (relative to the root) where LESS files are located
 
 * *hosted_at*['/stylesheets']:
   the public HTTP root path for stylesheets
@@ -47,8 +53,8 @@ You should now see `Rack::Less` listed in the middleware pipeline:
 * *compress*[false]:
   whether to remove extraneous whitespace from compilation output
 
-* *concat*[{}]:
-  directives for concatenating the ouput of one or more LESS compilations, for example:
+* *combinations*[{}]:
+  directives for combining the ouput of one or more LESS compilations, for example:
     { 'app' => ['one', 'two', 'three'] }
   will direct Rack::Less to respond to a request for app.css with the concatenated output of compiling one.less, two.less, and three.less
   

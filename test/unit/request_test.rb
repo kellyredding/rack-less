@@ -5,12 +5,15 @@ class RequestTest < Test::Unit::TestCase
 
   context 'Rack::Less::Request' do
     setup do 
-      @defaults = Rack::Less::Base.defaults
+      @defaults = Rack::Less::Base.defaults.merge({
+        Rack::Less::Base.option_name(:root) => file_path('test','fixtures','sinatra')
+      })
     end
     
     context "basic object" do
       should "have some attributes" do
-        [ :request_method,
+        [ :options,
+          :request_method,
           :path_info,
           :path_resource_name,
           :path_resource_format,
@@ -57,10 +60,16 @@ class RequestTest < Test::Unit::TestCase
       :description => "a css resource hosted somewhere other than where Rack::Less expects them"
     })
 
-    should_be_a_valid_rack_less_request({
+    should_not_be_a_valid_rack_less_request({
       :method      => "GET",
       :resource    => "/stylesheets/foo.css",
-      :description => "a css resource hosted where Rack::Less expects them"
+      :description => "a css resource hosted where Rack::Less expects them but does not match any source"
+    })
+
+    should_be_a_valid_rack_less_request({
+      :method      => "GET",
+      :resource    => "/stylesheets/normal.css",
+      :description => "a css resource hosted where Rack::Less expects them that matches source"
     })
 
   end

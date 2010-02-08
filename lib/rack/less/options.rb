@@ -3,9 +3,15 @@ module Rack::Less
     
     # Handles options and configuration for Rack::Less
     # Available options:
-    # => source_root
-    #    the path (relative to the app root) where
+    # => root
+    #    the app root. the reference point for the
+    #    source and public options
+    # => source
+    #    the path (relative to the root) where
     #    LESS files are located
+    # => public
+    #    the path (relative to the root) where
+    #    static files are served
     # => hosted_at
     #    the public HTTP root path for stylesheets
     # => cache
@@ -14,8 +20,8 @@ module Rack::Less
     # => compress
     #    whether to remove extraneous whitespace from
     #    compilation output
-    # => concat
-    #    expects a hash containing directives for contactenating
+    # => combine
+    #    expects a hash containing directives for combining
     #    the ouput of one or more LESS compilations, for example:
     #    { 'app' => ['one', 'two', 'three']}
     #    will respond to a request for app.css with the concatenated
@@ -31,11 +37,13 @@ module Rack::Less
       
       def defaults
         {
-          option_name(:source_root) => 'app/stylesheets',
-          option_name(:hosted_at)   => '/stylesheets',
-          option_name(:cache)       => false,
-          option_name(:compress)    => false,
-          option_name(:concat)      => {}
+          option_name(:root)      => nil,
+          option_name(:source)    => 'app/stylesheets',
+          option_name(:public)    => 'public',
+          option_name(:hosted_at) => '/stylesheets',
+          option_name(:cache)     => false,
+          option_name(:compress)  => false,
+          option_name(:combine)   => {}
         }
       end
 
@@ -65,8 +73,13 @@ module Rack::Less
       # request), this is a default values Hash. During a request, this is the
       # Rack environment Hash. The default values Hash is merged in underneath
       # the Rack environment before each request is processed.
-      def options
-        @env || @default_options
+      # => if a key is passed, the option value for the key is returned
+      def options(key=nil)
+        if key
+          (@env || @default_options)[option_name(key)]
+        else
+          @env || @default_options
+        end
       end
 
       # Set multiple options at once.

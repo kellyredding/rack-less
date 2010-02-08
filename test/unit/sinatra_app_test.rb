@@ -1,4 +1,4 @@
-require "test_helper"
+require "#{File.dirname(__FILE__)}/../test_helper"
 require "test_app_helper"
 require 'fixtures/sinatra/app'
 
@@ -11,6 +11,7 @@ class SinatraAppTest < Test::Unit::TestCase
     Rack::Less::Base.defaults["#{Rack::Less::Options::RACK_ENV_NS}.#{name}"]
   end
 
+=begin
   context "Given a Sinatra app using Rack::Less" do    
     context "with default options," do
       setup do
@@ -61,7 +62,8 @@ class SinatraAppTest < Test::Unit::TestCase
       end
     end
 
-=begin
+
+
     context "when requesting a stylesheet not needing to be compiled" do
       setup do
         @normal = File.open(File.join(app.root, default_value('source_root'), 'normal_compiled.css')) do |file|
@@ -103,8 +105,9 @@ class SinatraAppTest < Test::Unit::TestCase
         assert_equal @all.strip, @response.body.strip
       end
     end      
-=end
 
   end
 
+=begin
+=end
 end

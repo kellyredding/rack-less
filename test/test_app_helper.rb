@@ -23,7 +23,7 @@ class Test::Unit::TestCase
     def should_return_compiled_css
       should "return compiled css" do
         assert_equal 200, @response.status, "status is not '#{Rack::Utils::HTTP_STATUS_CODES[200]}'"
-        assert_equal Rack::Less::CONTENT_TYPE, @response.headers["Content-Type"], "content type is not '#{Rack::Less::CONTENT_TYPE}'"
+        assert_equal Rack::Less::MEDIA_TYPE, @response.headers["Content-Type"], "content type is not '#{Rack::Less::MEDIA_TYPE}'"
         assert_equal @compiled.strip, @response.body.strip, "the compiled css is incorrect"
       end
     end
