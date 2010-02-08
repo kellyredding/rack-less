@@ -34,7 +34,7 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     rake middleware
     
 == Available Options
-<option_name> [<default_value>]: option description
+key: name [default_value]: description
 
 * *root* ["."]:
   the app root. the reference point for the source and public options.
