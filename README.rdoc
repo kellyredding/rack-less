@@ -17,9 +17,9 @@ and use as follows:
 
     require 'rack/less'
     use Rack::Less do
-      set :source_root, 'app/less'
-      set :hosted_at,   '/'
-      set :compress,    true
+      set :source,    'app/less'
+      set :hosted_at, '/'
+      set :compress,  true
     end
     run app
 
@@ -35,7 +35,7 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     
 == Available Options
 
-* *root*[nil]:
+* *root*["."]:
   the app root. the reference point for the source and public options.  #TODO: default appropriately for Rails/Sinatra.
 
 * *source*['app/stylesheets']:

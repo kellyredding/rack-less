@@ -37,7 +37,7 @@ module Rack::Less
       
       def defaults
         {
-          option_name(:root)      => nil,
+          option_name(:root)      => ".",
           option_name(:source)    => 'app/stylesheets',
           option_name(:public)    => 'public',
           option_name(:hosted_at) => '/stylesheets',

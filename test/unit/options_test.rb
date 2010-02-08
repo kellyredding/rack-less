@@ -24,7 +24,7 @@ class OptionsTest < Test::Unit::TestCase
       assert_equal MockOptions.defaults[MockOptions.option_name(:source)], @options.options(:source)
     end
     
-    { :root => nil,
+    { :root => ".",
       :source => 'app/stylesheets',
       :public => 'public',
       :hosted_at => '/stylesheets',

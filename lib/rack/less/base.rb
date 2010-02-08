@@ -53,6 +53,8 @@ module Rack::Less
         raise(ArgumentError, "the :root path ('#{options(:root)}') does not exist") 
       end
 
+      set :root, File.expand_path(options(:root))
+
       # ensure a source path is specified and does exists
       unless options.has_key?(option_name(:source)) and !options(:source).nil?
         raise(ArgumentError, "no :source option set")
