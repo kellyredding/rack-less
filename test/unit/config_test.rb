@@ -48,6 +48,7 @@ class ConfigTest < Test::Unit::TestCase
       assert_respond_to Rack::Less, :configure
       assert_respond_to Rack::Less, :config
       assert_respond_to Rack::Less, :config=
+      assert_respond_to Rack::Less, :combinations
     end
     
     context "given a new configuration" do

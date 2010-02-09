@@ -38,6 +38,11 @@ module Rack::Less
     def config=(value)
       @@config = value
     end
+    
+    # Combinations config convenience method
+    def combinations(key=nil)
+      @@config.combinations(key)
+    end
 
   end
 
