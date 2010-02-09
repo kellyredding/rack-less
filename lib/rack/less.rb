@@ -1,4 +1,5 @@
 require 'rack'
+require 'rack/less/config'
 require 'rack/less/base'
 require 'rack/less/options'
 require 'rack/less/request'
@@ -22,15 +23,21 @@ require 'rack/less/source'
 
 module Rack::Less
   MIME_TYPE = "text/css"
+  @@config = Config.new
   
   class << self
     
-    # Proxy calls to Base.combinations
-    def combinations
-      Rack::Less::Base.combinations
+    # configure Rack::Less (see config.rb for details)
+    def configure
+      yield @@config if block_given?
     end
-    def combinations=(value={})
-      Rack::Less::Base.combinations = value
+    
+    def config
+      @@config
+    end
+    
+    def config=(value)
+      @@config = value
     end
 
   end
