@@ -1,7 +1,7 @@
 module Rack::Less
   module Options
     
-    # Handles options and configuration for Rack::Less
+    # Handles options for Rack::Less
     # Available options:
     # => root
     #    the app root. the reference point for the
@@ -41,45 +41,6 @@ module Rack::Less
         when String ; key
         else raise ArgumentError
         end
-      end
-      
-      # Rack::Less uses combinations to combine the output of many stylesheets
-      # and serve them as a single resource.  Combinations are specified using
-      # a hash, where the key is the combined resource name and the value is an
-      # array of stylesheets to combine as that resource.  For example:
-      # Rack::Less.combinations = {
-      #   'app' => ['one', 'two']
-      # }
-      @@combinations = {}
-      def combinations(key)
-        if @@cache
-          key
-        else
-          @@combinations[key]
-        end
-      end
-      def combinations=(value)
-        @@combinations = value
-      end
-      
-      # cache
-      # whether to cache the compilation output to a corresponding static file
-      @@cache = {}
-      def cache
-        @@cache || false
-      end
-      def cache=(value)
-        @@combinations = value
-      end
-      
-      # compress
-      # whether to remove extraneous whitespace from the compilation output
-      @@compress = {}
-      def compress
-        @@compress || {}
-      end
-      def combinations=(value={})
-        @@compress = value
       end
       
     end
