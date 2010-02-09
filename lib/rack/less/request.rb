@@ -43,7 +43,7 @@ module Rack::Less
     # The Rack::Less::Source that the request is for
     def source
       @source ||= begin
-        cache = if options(:cache)
+        cache = if Rack::Less.config.cache?
           File.join(options(:root), options(:public), options(:hosted_at))
         else
           nil
@@ -51,7 +51,7 @@ module Rack::Less
         source_opts = {
           :folder   => File.join(options(:root), options(:source)),
           :cache    => cache,
-          :compress => options(:compress)
+          :compress => Rack::Less.config.compress?
         }
         Source.new(path_resource_name, source_opts)
       end

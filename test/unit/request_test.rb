@@ -34,6 +34,30 @@ class RequestTest < Test::Unit::TestCase
       end
     end
     
+    context "#source " do
+      should "match :compress settings with Rack::Less:Config" do
+        req = less_request("GET", "/stylesheets/normal.css")
+        assert_equal Rack::Less.config.compress?, req.source.compress?
+      end
+      
+      should "set it's cache value to nil when Rack::Less not configured to cache" do
+        Rack::Less.config = Rack::Less::Config.new
+        req = less_request("GET", "/stylesheets/normal.css")
+
+        assert_equal false, req.source.cache?
+        assert_equal nil, req.source.cache
+      end
+
+      should "set it's cache to the appropriate path when Rack::Less configured to cache" do
+        Rack::Less.config = Rack::Less::Config.new :cache => true
+        req = less_request("GET", "/stylesheets/normal.css")
+        cache_path = File.join(req.options(:root), req.options(:public), req.options(:hosted_at))
+        
+        assert_equal true, req.source.cache?
+        assert_equal cache_path, req.source.cache
+      end
+    end
+    
     should_not_be_a_valid_rack_less_request({
       :method      => "POST",
       :resource    => "/foo.html",
