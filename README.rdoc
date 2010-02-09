@@ -113,6 +113,7 @@ then the same stylesheet link tags behave like they have the :cache option set, 
 == Links
 
 GitHub: http://github.com/kelredd/rack-less
+
 Less:   http://lesscss.org
 
 == License
