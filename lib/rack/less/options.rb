@@ -14,12 +14,6 @@ module Rack::Less
     #    static files are served
     # => hosted_at
     #    the public HTTP root path for stylesheets
-    # => cache
-    #    whether to cache the compilation output to a
-    #    corresponding file in the hosted_root
-    # => compress
-    #    whether to remove extraneous whitespace from
-    #    compilation output
     
     # Note: the following code is heavily influenced by:
     # => http://github.com/rtomayko/rack-cache/blob/master/lib/rack/cache/options.rb
@@ -35,8 +29,6 @@ module Rack::Less
           option_name(:source)    => 'app/stylesheets',
           option_name(:public)    => 'public',
           option_name(:hosted_at) => '/stylesheets',
-          option_name(:cache)     => false,
-          option_name(:compress)  => false
         }
       end
 
@@ -59,11 +51,35 @@ module Rack::Less
       #   'app' => ['one', 'two']
       # }
       @@combinations = {}
-      def combinations
-        @@combinations || {}
+      def combinations(key)
+        if @@cache
+          key
+        else
+          @@combinations[key]
+        end
+      end
+      def combinations=(value)
+        @@combinations = value
+      end
+      
+      # cache
+      # whether to cache the compilation output to a corresponding static file
+      @@cache = {}
+      def cache
+        @@cache || false
+      end
+      def cache=(value)
+        @@combinations = value
+      end
+      
+      # compress
+      # whether to remove extraneous whitespace from the compilation output
+      @@compress = {}
+      def compress
+        @@compress || {}
       end
       def combinations=(value={})
-        @@combinations = value
+        @@compress = value
       end
       
     end
