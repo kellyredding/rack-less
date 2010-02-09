@@ -48,7 +48,7 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     rake middleware
     
 == Available Options
-key: name [default_value]: description
+key: name [default]: description
 
 * *root* ["."]:
   the app root. the reference point for the source and public options.
@@ -63,20 +63,20 @@ key: name [default_value]: description
   the public HTTP path for hosted stylesheets
 
 == Available Configurations
-key: name [default_value]: description
+key: name [default]: description
 
 * *cache* [false]:
-  whether to cache the compilation output to a corresponding file in the public folder hosted_at path
+  whether to cache the compilation output to a corresponding static file
 
 * *compress* [false]:
   whether to remove extraneous whitespace from compilation output
 
 * *combinations* [{}]:
-  directives for combining the output of many stylesheets and serving them as a single resource (see below for more details)
+  directives for combining the output of many stylesheets and serving them as a single resource
 
 === Combinations
 
-At times, it is useful to combine multiple stylesheets and serve them as one resource.  For example you may have two sets of stylesheets: one for traditional web views and one for mobile web views.  Rails' provides the :cache option on 'stylesheet_link_tag' helper:
+At times, it is useful to combine multiple stylesheets and serve them as one resource.  For example you may have two sets of stylesheets: one for traditional web views and one for mobile web views.  Rails' provides the :cache option on 'stylesheet_link_tag' helper to provide this function, ie:
 
     stylesheet_link_tag 'reset', 'common', 'app_web', :cache => 'web'
     stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile', :cache => 'mobile'
@@ -98,7 +98,7 @@ and stylesheet link tags like this, respectively:
     # equivalent to: stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile'
     stylesheet_link_tag Rack::Less.combinations('mobile')
     
-if you configure Rack::Less to cache, with something like this:
+If you configure Rack::Less to cache, with something like this:
 
     Rack::Less.config.cache = true
     
