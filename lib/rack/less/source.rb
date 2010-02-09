@@ -1,4 +1,5 @@
 require 'less'
+require 'rack/less'
 
 module Rack::Less
 
@@ -26,6 +27,9 @@ module Rack::Less
     end
     def cache?
       !@cache.nil?
+    end
+    def cache
+      @cache
     end
     
     # Use named css sources before using combination sources
@@ -61,9 +65,9 @@ module Rack::Less
     end
     
     # Preferred, existing source files matching a corresponding
-    # Rack::Less::Base combination directive, if any
+    # Rack::Less::Config combination directive, if any
     def combination_sources
-      @combination_sources ||= preferred_sources(Base.combinations[@css_name] || [])
+      @combination_sources ||= preferred_sources(Rack::Less.config.combinations[@css_name] || [])
     end
     
     private

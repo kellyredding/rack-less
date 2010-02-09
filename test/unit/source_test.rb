@@ -38,9 +38,10 @@ class SourceTest < Test::Unit::TestCase
         })
       end
       
-      should "know it's name" do 
+      should "have accessors for name and cache values" do 
         assert_respond_to @basic, :css_name
         assert_equal 'basic', @basic.css_name
+        assert_respond_to @basic, :cache
       end
       
       should "have an option for using compression" do
@@ -119,12 +120,12 @@ class SourceTest < Test::Unit::TestCase
     context "that is a combination of multiple files" do
       setup do
         @compiled = File.read(File.join(@source_folder, "all_compiled.css"))
-        @combinations_before = Rack::Less.combinations
-        Rack::Less.combinations = {'all' => ['all_one', 'all_two']}
+        @combinations_before = Rack::Less.config.combinations
+        Rack::Less.config.combinations = {'all' => ['all_one', 'all_two']}
         @all = Rack::Less::Source.new('all', :folder => @source_folder)
       end
       teardown do
-        Rack::Less.combinations = @combinations_before
+        Rack::Less.config.combinations = @combinations_before
       end
 
       should "combine the compiled css" do
