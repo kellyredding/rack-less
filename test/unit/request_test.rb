@@ -29,8 +29,8 @@ class RequestTest < Test::Unit::TestCase
       end
       
       should "know it's resource format" do
-        assert_equal 'css', less_request("GET", "/foo.css").path_resource_format
-        assert_equal 'css', less_request("GET", "/foo/bar.css").path_resource_format
+        assert_equal '.css', less_request("GET", "/foo.css").path_resource_format
+        assert_equal '.css', less_request("GET", "/foo/bar.css").path_resource_format
       end
     end
     
@@ -94,6 +94,23 @@ class RequestTest < Test::Unit::TestCase
       :description => "a css resource hosted where Rack::Less expects them that matches source"
     })
 
+    should_be_a_valid_rack_less_request({
+      :method      => "GET",
+      :resource    => "/stylesheets/some-styles.css",
+      :description => "a proper css resource with a '-' in the name"
+    })
+
+    should_be_a_valid_rack_less_request({
+      :method      => "GET",
+      :resource    => "/stylesheets/some-styles.css",
+      :description => "a proper css resource with a '_' in the name"
+    })
+
+    should_be_a_valid_rack_less_request({
+      :method      => "GET",
+      :resource    => "/stylesheets/styles1.css",
+      :description => "a proper css resource with a number in the name"
+    })
   end
 
 end

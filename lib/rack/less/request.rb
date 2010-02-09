@@ -14,7 +14,7 @@ module Rack::Less
     include Rack::Less::Options
     
     CSS_PATH_REGEX = /\A.*\/(\w+)\.(\w+)\Z/
-    CSS_PATH_FORMATS = ['css']
+    CSS_PATH_FORMATS = ['.css']
 
     # The HTTP request method. This is the standard implementation of this
     # method but is respecified here due to libraries that attempt to modify
@@ -33,11 +33,11 @@ module Rack::Less
     end
     
     def path_resource_name
-      path_info =~ CSS_PATH_REGEX ? path_info.match(CSS_PATH_REGEX)[1] : nil
+      File.basename(path_info, path_resource_format)
     end
     
     def path_resource_format
-      path_info =~ CSS_PATH_REGEX ? path_info.match(CSS_PATH_REGEX)[2] : nil
+      File.extname(path_info)
     end
 
     # The Rack::Less::Source that the request is for
