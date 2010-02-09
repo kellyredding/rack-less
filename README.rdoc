@@ -16,10 +16,17 @@ or uses Rack::Builder to construct the application pipeline, simply require
 and use as follows:
 
     require 'rack/less'
+    
+    # optional - use as necessary
+    Rack::Less.configure do |config|
+      config.compress = true
+      # other configs ...
+    end
 
     use Rack::Less,
-      :source   => 'app/less'
-      :compress => true
+      :source    => 'app/less',
+      :hosted_at => '/'
+      # additional options ...
 
     run app
 
@@ -28,6 +35,13 @@ and use as follows:
 Add this to your `config/environment.rb`:
 
     config.middleware.use "Rack::Less"
+
+Add any configs in an initializer (optional - use as necessary):
+
+    Rack::Less.configure do |config|
+      config.cache = true
+      # additional configs ...
+    end
 
 You should now see `Rack::Less` listed in the middleware pipeline:
 
@@ -48,32 +62,57 @@ key: name [default_value]: description
 * *hosted_at* ['/stylesheets']:
   the public HTTP path for hosted stylesheets
 
+== Available Configurations
+key: name [default_value]: description
+
 * *cache* [false]:
   whether to cache the compilation output to a corresponding file in the public folder hosted_at path
 
 * *compress* [false]:
   whether to remove extraneous whitespace from compilation output
-  
-== Combinations
 
-At times, it is useful to combine many stylesheets and serve them as one resource.  Rails' has a helper for this:
+* *combinations* [{}]:
+  directives for combining the output of many stylesheets and serving them as a single resource (see below for more details)
 
-    stylesheet_link_tag 'one', two', :cache => 'app'
+=== Combinations
+
+At times, it is useful to combine multiple stylesheets and serve them as one resource.  For example you may have two sets of stylesheets: one for traditional web views and one for mobile web views.  Rails' provides the :cache option on 'stylesheet_link_tag' helper:
+
+    stylesheet_link_tag 'reset', 'common', 'app_web', :cache => 'web'
+    stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile', :cache => 'mobile'
     
-Rack::Less supports this concept by providing combinations.  Combinations are specified using a hash, where the key is the combined resource name and the value is an array of stylesheets to combine as that resource.  For example:
+Rack::Less uses combinations, in conjunction with the :cache config setting, to provide this function.  Combinations are configured using a hash, where the key is the resource name and the value is an array of names corresponding to stylesheets to combine as the named resource.  For the above example, use a configuration like this:
 
-    Rack::Less.combinations = {
-      'app' => ['one', 'two']
-    }
+    Rack::Less.configure do |config|
+      config.combinations = {
+        'web' => ['reset', 'common', 'app_web'],
+        'mobile' => ['reset', 'common', 'iui', 'app_mobile']
+      }
+    end
 
-would service the above stylesheet_link_tag.  Even better, you could re-factor the stylesheet_link_tag as follows to DRY it up:
+and stylesheet link tags like this, respectively:
 
-    stylesheet_link_tag Rack::Less.combinations['app'], :cache => 'app'
+    # equivalent to: stylesheet_link_tag 'reset', 'common', 'app_web'
+    stylesheet_link_tag Rack::Less.combinations('web')
+    
+    # equivalent to: stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile'
+    stylesheet_link_tag Rack::Less.combinations('mobile')
+    
+if you configure Rack::Less to cache, with something like this:
+
+    Rack::Less.config.cache = true
+    
+then the same stylesheet link tags behave like they have the :cache option set, respectively:
+
+    # equivalent to: stylesheet_link_tag 'reset', 'common', 'app_web', :cache => 'web'
+    stylesheet_link_tag Rack::Less.combinations('web')
+
+    # equivalent to: stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile', :cache => 'mobile'
+    stylesheet_link_tag Rack::Less.combinations('mobile')
 
 == Links
 
 GitHub: http://github.com/kelredd/rack-less
-    
 Less:   http://lesscss.org
 
 == License
