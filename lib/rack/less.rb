@@ -27,15 +27,14 @@ module Rack::Less
   
   class << self
     
-    # configure Rack::Less (see config.rb for details)
+    # Configuration accessors for Rack::Less
+    # (see config.rb for details)
     def configure
       yield @@config if block_given?
     end
-    
     def config
       @@config
     end
-    
     def config=(value)
       @@config = value
     end

@@ -23,9 +23,9 @@ class ConfigTest < Test::Unit::TestCase
     
     should "provide boolean readers" do
       assert_respond_to @config, :cache?, "no reader for :cache?"
-      assert_equal (@config.cache == true), @config.cache?
+      assert_equal !!@config.cache, @config.cache?
       assert_respond_to @config, :compress?, "no reader for :compress?"
-      assert_equal (@config.compress == true), @config.compress?
+      assert_equal !!@config.compress, @config.compress?
     end
     
     should "allow init with setting hash" do
