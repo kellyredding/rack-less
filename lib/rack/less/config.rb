@@ -24,7 +24,13 @@ module Rack::Less
       @compress == true
     end
     
-    # TODO: write custom :combinations reader and test it
+    def combinations(key=nil)
+      if key.nil?
+        @combinations
+      else
+        cache? ? key : @combinations[key]
+      end
+    end
     
   end
 end

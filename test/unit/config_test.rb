@@ -67,8 +67,11 @@ class ConfigTest < Test::Unit::TestCase
       end
       
       should "allow Rack::Less to directly apply settings" do
-        Rack::Less.config = @traditional_config
-        assert_equal @traditional_config, Rack::Less.config
+        Rack::Less.config = @traditional_config.dup
+        
+        assert_equal @traditional_config.cache, Rack::Less.config.cache
+        assert_equal @traditional_config.compress, Rack::Less.config.compress
+        assert_equal @traditional_config.combinations, Rack::Less.config.combinations
       end
 
       should "allow Rack::Less to apply settings using a block" do
@@ -79,10 +82,41 @@ class ConfigTest < Test::Unit::TestCase
             'all' => ['one', 'two']
           }
         end
+        
         assert_equal @traditional_config.cache, Rack::Less.config.cache
         assert_equal @traditional_config.compress, Rack::Less.config.compress
         assert_equal @traditional_config.combinations, Rack::Less.config.combinations
       end
+      
+      context "#combinations" do
+        setup do
+          @settings = {
+            :combinations => {
+              'all' => ['one', 'two']
+            }
+          }
+        end
+        
+        should "should be able to access it's values with a parameter" do
+          config = Rack::Less::Config.new @settings
+          
+          assert_equal ['one', 'two'], config.combinations('all')
+          assert_equal nil, config.combinations('wtf')
+        end
+        
+        context "if cache setting is true" do
+          setup do
+            @settings[:cache] = true
+          end
+
+          should "should the lookup parameter instead of the value" do
+            config = Rack::Less::Config.new @settings
+            
+            assert_equal 'all', config.combinations('all')
+          end
+        end
+      end
+      
     end
 
   end
