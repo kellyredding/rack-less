@@ -48,30 +48,28 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     rake middleware
     
 == Available Options
-key: name [default]: description
 
-* *root* ["."]:
+* :*root* ["."]:
   the app root. the reference point for the source and public options.
 
-* *source* ['app/stylesheets']:
+* :*source* ['app/stylesheets']:
   the path (relative to the root) where LESS source files are located
 
-* *public* ['public']:
+* :*public* ['public']:
   the path (relative to the root) static files are located
 
-* *hosted_at* ['/stylesheets']:
+* :*hosted_at* ['/stylesheets']:
   the public HTTP path for hosted stylesheets
 
 == Available Configurations
-key: name [default]: description
 
-* *cache* [false]:
+* .*cache* [false]:
   whether to cache the compilation output to a corresponding static file
 
-* *compress* [false]:
+* .*compress* [false]:
   whether to remove extraneous whitespace from compilation output
 
-* *combinations* [{}]:
+* .*combinations* [{}]:
   directives for combining the output of many stylesheets and serving them as a single resource
 
 === Combinations
@@ -112,9 +110,11 @@ then the same stylesheet link tags behave like they have the :cache option set, 
 
 == Links
 
-GitHub: http://github.com/kelredd/rack-less
+* *GitHub*
+  - http://github.com/kelredd/rack-less
 
-Less:   http://lesscss.org
+* *Less* *CSS*
+  - http://lesscss.org
 
 == License
 
