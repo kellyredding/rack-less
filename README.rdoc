@@ -49,21 +49,28 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     
 == Available Options
 
-* :*root* ["."] - the app root. the reference point for the source and public options.
+* :*root* ["."]
+  - The app root.  The reference point for the source and public options.
 
-* :*source* ['app/stylesheets'] - the path (relative to the root) where LESS source files are located
+* :*source* ['app/stylesheets']
+  - The path (relative to the root) where LESS source files are located
 
-* :*public* ['public'] - the path (relative to the root) static files are located
+* :*public* ['public']
+  - The path where static files are located
 
-* :*hosted_at* ['/stylesheets'] - the public HTTP path for hosted stylesheets
+* :*hosted_at* ['/stylesheets']
+  - The public HTTP path for hosted stylesheets.
 
 == Available Configurations
 
-* .*cache* [false] - whether to cache the compilation output to a corresponding static file
+* .*cache* [false]
+  - Whether to cache the compilation output to a corresponding static file
 
-* .*compress* [false] - whether to remove extraneous whitespace from compilation output
+* .*compress* [false]
+  - Whether to remove extraneous whitespace from compilation output
 
-* .*combinations* [{}] - directives for combining the output of many stylesheets and serving them as a single resource
+* .*combinations* [{}]
+  - Directives for combining the output of many stylesheets and serving them as a single resource.
 
 === Combinations
 
