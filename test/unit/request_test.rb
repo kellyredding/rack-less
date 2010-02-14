@@ -72,12 +72,6 @@ class RequestTest < Test::Unit::TestCase
     
     should_not_be_a_valid_rack_less_request({
       :method      => "GET",
-      :resource    => "/foo.html",
-      :description => "a non-css resource"
-    })
-    
-    should_not_be_a_valid_rack_less_request({
-      :method      => "GET",
       :resource    => "/foo.css",
       :description => "a css resource hosted somewhere other than where Rack::Less expects them"
     })
@@ -102,7 +96,7 @@ class RequestTest < Test::Unit::TestCase
 
     should_be_a_valid_rack_less_request({
       :method      => "GET",
-      :resource    => "/stylesheets/some-styles.css",
+      :resource    => "/stylesheets/some_styles.css",
       :description => "a proper css resource with a '_' in the name"
     })
 

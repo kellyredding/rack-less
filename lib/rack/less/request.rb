@@ -13,7 +13,6 @@ module Rack::Less
   class Request < Rack::Request
     include Rack::Less::Options
     
-    CSS_PATH_REGEX = /\A.*\/(\w+)\.(\w+)\Z/
     CSS_PATH_FORMATS = ['.css']
 
     # The HTTP request method. This is the standard implementation of this

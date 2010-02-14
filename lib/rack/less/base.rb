@@ -33,7 +33,6 @@ module Rack::Less
     def call!(env)
       @default_options.each { |k,v| env[k] ||= v }
       @env = env
-      # TODO: get this going
       
       if (@request = Request.new(@env.dup.freeze)).for_less?
         Response.new(@env.dup.freeze, @request.source.to_css).to_rack

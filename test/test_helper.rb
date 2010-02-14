@@ -76,7 +76,6 @@ class Test::Unit::TestCase
         assert @request.get?, 'the request is not a GET'
         assert @request.for_css?, 'the request is not for css'
         assert !@request.source.files.empty?, 'the request resource has no source'
-        assert @request.for_css?, 'the request is not for css'
         assert @request.for_less?, 'the request is not for less'
       end
     end

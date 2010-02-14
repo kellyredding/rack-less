@@ -48,7 +48,6 @@ module Rack::Less
 
   # Create a new Rack::Less middleware component 
   # => the +options+ Hash can be used to specify default configuration values
-  # => a block can given as an alternate method for setting option values (see example above)
   # => (see Rack::Less::Options for possible key/values)
   def self.new(app, options={}, &block)
     Base.new(app, options, &block)
