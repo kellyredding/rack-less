@@ -67,7 +67,9 @@ You should now see `Rack::Less` listed in the middleware pipeline:
   - Whether to cache the compilation output to a corresponding static file
 
 * .*compress* [false]
-  - Whether to remove extraneous whitespace from compilation output
+  - Whether or not to apply compression to the concatenation output
+    - :*yui* - use YUI Compressor (gem install yui-compressor)
+    - :*whitespace* - remove extraneous whitespace only.
 
 * .*combinations* [{}]
   - Directives for combining the output of many stylesheets and serving them as a single resource.

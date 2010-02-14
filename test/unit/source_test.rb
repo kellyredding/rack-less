@@ -94,7 +94,7 @@ class SourceTest < Test::Unit::TestCase
       end
 
       should "compress the compiled css" do
-        assert_equal @compiled.strip.delete!("\n"), @compressed_normal.to_css, "the compiled css is compressed incorrectly"
+        assert_equal @compiled.strip.delete("\n"), @compressed_normal.to_css, "the compiled css is compressed incorrectly"
       end
     end
 

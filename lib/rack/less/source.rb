@@ -52,8 +52,8 @@ module Rack::Less
         end.join("\n")
         
         compiled_css = case @compress
-        when :whitespace
-          compiled_css.delete("\n") if compress?
+        when :whitespace, true
+          compiled_css.delete("\n")
         when :yui
           if defined?(YUI::CssCompressor)
             YUI::CssCompressor.new(YUI_OPTS).compress(compiled_css)
