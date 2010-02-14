@@ -84,17 +84,32 @@ class SourceTest < Test::Unit::TestCase
     should_compile_source('css', "that is a CSS stylesheet")
 
 
-    context "with compression" do
+    context "with whitespace compression" do
       setup do
         @compiled = File.read(File.join(@source_folder, "normal_compiled.css"))
         @compressed_normal = Rack::Less::Source.new('normal', {
           :folder => @source_folder,
-          :compress => true
+          :compress => :whitespace
         })
       end
 
       should "compress the compiled css" do
         assert_equal @compiled.strip.delete!("\n"), @compressed_normal.to_css, "the compiled css is compressed incorrectly"
+      end
+    end
+
+    context "with yui compression" do
+      setup do
+        @compiled = File.read(File.join(@source_folder, "normal_compiled.css"))
+        @compressed_normal = Rack::Less::Source.new('normal', {
+          :folder => @source_folder,
+          :compress => :yui
+        })
+      end
+
+      should "compress the compiled css" do
+        comp = YUI::CssCompressor.new(Rack::Less::Source::YUI_OPTS).compress(@compiled.strip)
+        assert_equal comp, @compressed_normal.to_css, "the compiled css is compressed incorrectly"
       end
     end
 

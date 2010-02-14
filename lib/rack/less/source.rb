@@ -1,5 +1,11 @@
 require 'less'
-require 'rack/less'
+
+begin
+  require "yui/compressor"
+rescue LoadError
+  # only error about missing yui compressor if
+  # :yui compression is requested
+end
 
 module Rack::Less
 
@@ -12,6 +18,8 @@ module Rack::Less
     # prefer source files with the .less extension
     # but also accept files with the .css extension
     PREFERRED_EXTENSIONS = [:less, :css]
+    
+    YUI_OPTS = {}
     
     attr_reader :css_name
     
@@ -43,7 +51,19 @@ module Rack::Less
           Less::Engine.new(File.new(file_path)).to_css
         end.join("\n")
         
-        compiled_css.delete!("\n") if compress?
+        compiled_css = case @compress
+        when :whitespace
+          compiled_css.delete("\n") if compress?
+        when :yui
+          if defined?(YUI::CssCompressor)
+            YUI::CssCompressor.new(YUI_OPTS).compress(compiled_css)
+          else
+            raise LoadError, "YUI::CssCompressor is not available. Install it with: gem install yui-compressor"
+          end
+        else
+          compiled_css
+        end
+
         if cache? && !File.exists?(cf = File.join(@cache, "#{@css_name}.css"))
           FileUtils.mkdir_p(@cache)
           File.open(cf, "w") do |file|
