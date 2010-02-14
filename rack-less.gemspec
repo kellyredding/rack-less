@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rack-less}
-  s.version = "1.1.1"
+  s.version = "1.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kelly Redding"]
-  s.date = %q{2010-02-09}
+  s.date = %q{2010-02-14}
   s.email = %q{kelly@kelredd.com}
   s.extra_rdoc_files = ["README.rdoc"]
   s.files = ["README.rdoc", "Rakefile", "lib/rack", "lib/rack/less", "lib/rack/less/base.rb", "lib/rack/less/config.rb", "lib/rack/less/options.rb", "lib/rack/less/request.rb", "lib/rack/less/response.rb", "lib/rack/less/source.rb", "lib/rack/less/version.rb", "lib/rack/less.rb"]
