@@ -39,17 +39,16 @@ module Rack::Less
       File.extname(path_info)
     end
 
+    def cache
+      File.join(options(:root), options(:public), options(:hosted_at))
+    end
+
     # The Rack::Less::Source that the request is for
     def source
       @source ||= begin
-        cache = if Rack::Less.config.cache?
-          File.join(options(:root), options(:public), options(:hosted_at))
-        else
-          nil
-        end
         source_opts = {
           :folder   => File.join(options(:root), options(:source)),
-          :cache    => cache,
+          :cache    => Rack::Less.config.cache? ? cache : nil,
           :compress => Rack::Less.config.compress?
         }
         Source.new(path_resource_name, source_opts)
@@ -62,12 +61,25 @@ module Rack::Less
       CSS_PATH_FORMATS.include?(path_resource_format)
     end
 
+    def hosted_at?
+      File.basename(File.dirname(path_info)) == File.basename(options(:hosted_at))
+    end
+    
+    def exists?
+      File.exists?(File.join(cache, "#{path_resource_name}#{path_resource_format}"))
+    end
+
     # Determine if the request is for existing LESS CSS file
     # This will be called on every request so speed is an issue
-    # => first check if the request is a GET on a css resource (fast)
-    # => then check for less source files that match the request (slow)
+    # => first check if the request is a GET on a css resource :hosted_at (fast)
+    # => don't process if a file already exists in :hosted_at
+    # => otherwise, check for less source files that match the request (slow)
     def for_less?
-      get? && for_css? && !source.files.empty?
+      get? &&
+      for_css? &&
+      hosted_at? &&
+      !exists? &&
+      !source.files.empty?
     end
     
   end
