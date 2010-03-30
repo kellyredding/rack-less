@@ -44,6 +44,11 @@ module Rack::Less
       @@config.combinations(key)
     end
 
+    # Combination timestamp config convenience method
+    def combination_timestamp
+      @@config.combination_timestamp
+    end
+
   end
 
   # Create a new Rack::Less middleware component 

@@ -9,7 +9,8 @@ class ConfigTest < Test::Unit::TestCase
     
     { :cache => false,
       :compress => false,
-      :combinations => {}
+      :combinations => {},
+      :combination_timestamp => false
     }.each do |k,v|
       should "default #{k} correctly" do
         assert_equal v, @config.send(k)
@@ -34,7 +35,8 @@ class ConfigTest < Test::Unit::TestCase
         :compress => true,
         :combinations => {
           'all' => ['one', 'two']
-        }
+        },
+        :combination_timestamp => false
       }
       config = Rack::Less::Config.new settings
       
@@ -49,6 +51,7 @@ class ConfigTest < Test::Unit::TestCase
       assert_respond_to Rack::Less, :config
       assert_respond_to Rack::Less, :config=
       assert_respond_to Rack::Less, :combinations
+      assert_respond_to Rack::Less, :combination_timestamp
     end
     
     context "given a new configuration" do
@@ -59,7 +62,8 @@ class ConfigTest < Test::Unit::TestCase
           :compress => true,
           :combinations => {
             'all' => ['one', 'two']
-          }
+          },
+          :combination_timestamp => false
         }
         @traditional_config = Rack::Less::Config.new @settings
       end
@@ -73,6 +77,7 @@ class ConfigTest < Test::Unit::TestCase
         assert_equal @traditional_config.cache, Rack::Less.config.cache
         assert_equal @traditional_config.compress, Rack::Less.config.compress
         assert_equal @traditional_config.combinations, Rack::Less.config.combinations
+        assert_equal @traditional_config.combination_timestamp, Rack::Less.config.combination_timestamp
       end
 
       should "allow Rack::Less to apply settings using a block" do
@@ -82,11 +87,13 @@ class ConfigTest < Test::Unit::TestCase
           config.combinations = {
             'all' => ['one', 'two']
           }
+          config.combination_timestamp = false
         end
         
         assert_equal @traditional_config.cache, Rack::Less.config.cache
         assert_equal @traditional_config.compress, Rack::Less.config.compress
         assert_equal @traditional_config.combinations, Rack::Less.config.combinations
+        assert_equal @traditional_config.combination_timestamp, Rack::Less.config.combination_timestamp
       end
       
       context "#combinations" do
@@ -101,8 +108,8 @@ class ConfigTest < Test::Unit::TestCase
         should "should be able to access it's values with a parameter" do
           config = Rack::Less::Config.new @settings
           
-          assert_equal ['one', 'two'], config.combinations('all')
-          assert_equal nil, config.combinations('wtf')
+          assert_equal ['one.css', 'two.css'], config.combinations('all')
+          assert_equal [], config.combinations('wtf')
         end
         
         context "if cache setting is true" do
@@ -113,9 +120,35 @@ class ConfigTest < Test::Unit::TestCase
           should "should the lookup parameter instead of the value" do
             config = Rack::Less::Config.new @settings
             
-            assert_equal 'all', config.combinations('all')
+            assert_equal 'all.css', config.combinations('all')
           end
         end
+
+        context "when timestamp true" do
+          setup do
+            @settings[:combination_timestamp] = true
+          end
+
+          should "should the lookup parameter instead of the value" do
+            config = Rack::Less::Config.new @settings
+            
+            assert_match /one.css\?[0-9]+/, config.combinations('all').first
+          end
+        end
+
+        context "when timestamp specified" do
+          setup do
+            @stamp = Time.now.to_i - 100_000
+            @settings[:combination_timestamp] = @stamp
+          end
+
+          should "should the lookup parameter instead of the value" do
+            config = Rack::Less::Config.new @settings
+            
+            assert_equal ["one.css?#{@stamp}", "two.css?#{@stamp}"], config.combinations('all')
+          end
+        end
+
       end
       
     end

@@ -28,7 +28,7 @@ module Rack::Less
           option_name(:root)      => ".",
           option_name(:source)    => 'app/stylesheets',
           option_name(:public)    => 'public',
-          option_name(:hosted_at) => '/stylesheets',
+          option_name(:hosted_at) => '/stylesheets'
         }
       end
 
