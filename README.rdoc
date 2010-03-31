@@ -74,6 +74,12 @@ You should now see `Rack::Less` listed in the middleware pipeline:
 * .*combinations* [{}]
   - Directives for combining the output of many stylesheets and serving them as a single resource.
 
+* .*combination_timestamp* [false]
+  - Directives for timestamping (cache-busting) while using combinations
+    - :*false* - don't explicitly add timestamps
+    - :*true* - add Time.now.to_i as the explicit timestamp (will never cache)
+    - :*<any other value>* - add the value as "foo.css?<value>" (use something like a File.mtime to cache-bust like Rails does)
+
 === Combinations
 
 At times, it is useful to combine multiple stylesheets and serve them as one resource.  For example you may have two sets of stylesheets: one for traditional web views and one for mobile web views.  Rails' provides the :cache option on 'stylesheet_link_tag' helper to provide this function, ie:

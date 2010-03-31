@@ -2,18 +2,18 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rack-less}
-  s.version = "1.2.1"
+  s.version = "1.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kelly Redding"]
-  s.date = %q{2010-02-14}
+  s.date = %q{2010-03-30}
   s.email = %q{kelly@kelredd.com}
   s.extra_rdoc_files = ["README.rdoc"]
   s.files = ["README.rdoc", "Rakefile", "lib/rack", "lib/rack/less", "lib/rack/less/base.rb", "lib/rack/less/config.rb", "lib/rack/less/options.rb", "lib/rack/less/request.rb", "lib/rack/less/response.rb", "lib/rack/less/source.rb", "lib/rack/less/version.rb", "lib/rack/less.rb"]
   s.homepage = %q{http://github.com/kelredd/rack-less}
   s.rdoc_options = ["--main", "README.rdoc"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{A better way to use LESS CSS in Ruby web apps.}
 
   if s.respond_to? :specification_version then
