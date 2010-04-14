@@ -12,39 +12,7 @@ class SinatraTest < Test::Unit::TestCase
   end
 
   context "A Sinatra app using Rack::Less" do    
-    should "fail when no options are set" do
-      assert_raise ArgumentError do
-        app.use Rack::Less
-        visit "/"
-      end
-    end
-    
-    should "fail when no :root option is set" do
-      assert_raise ArgumentError do
-        app.use Rack::Less, :compress => true
-        visit "/"
-      end
-    end
-    
-    should "fail when :root option does not exist" do
-      assert_raise ArgumentError do
-        app.use Rack::Less,
-          :root => file_path('test','fixtures','wtf')
-        
-        visit "/"
-      end
-    end
-    
-    should "fail when :source option does not exist" do
-      assert_raise ArgumentError do
-        app.use Rack::Less,
-          :root   => file_path('test','fixtures','sinatra'),
-          :source => 'wtf'
-        
-        visit "/"
-      end
-    end
-    
+
     context "requesting valid LESS" do
       setup do
         app.use Rack::Less,
@@ -56,6 +24,7 @@ class SinatraTest < Test::Unit::TestCase
 
       should_respond_with_compiled_css
     end
+
   end
 
 end
