@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../test_helper"
+require "test_helper"
 require 'rack/less/request'
 
 class RequestTest < Test::Unit::TestCase
