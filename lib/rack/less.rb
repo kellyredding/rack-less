@@ -43,12 +43,18 @@ module Rack::Less
     def combinations(key=nil)
       @@config.combinations(key)
     end
-
-    # Combination timestamp config convenience method
-    def combination_timestamp
-      @@config.combination_timestamp
+    
+    # Cache bust config convenience method
+    def cache_bust
+      @@config.cache_bust
     end
 
+    # <b>DEPRECATED:</b> Please use <tt>cache_bust</tt> instead.
+    def combination_timestamp
+      warn "[DEPRECATION] `combination_timestamp` is deprecated.  Please use `cache_bust` instead."
+      cache_bust
+    end
+    
   end
 
   # Create a new Rack::Less middleware component 
