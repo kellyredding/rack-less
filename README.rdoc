@@ -74,15 +74,27 @@ You should now see `Rack::Less` listed in the middleware pipeline:
 * .*combinations* [{}]
   - Directives for combining the output of many stylesheets and serving them as a single resource.
 
-* .*combination_timestamp* [false]
+* .*cache_bust* [nil]
   - Directives for timestamping (cache-busting) while using combinations
-    - :*false* - don't explicitly add timestamps
-    - :*true* - add Time.now.to_i as the explicit timestamp (will never cache)
-    - :*<any other value>* - add the value as "foo.css?<value>" (use something like a File.mtime to cache-bust like Rails does)
+    - :*false* - don't explicitly cache bust (no value added)
+    - :*true* - use Time.now.to_i as the explicit value (will never cache)
+    - :*nil* - change cache bust value if the file is modified (similar to Rails' stylesheet_link_tag)
+    - :*<any other value>* - add the value as "foo.css?<value>"
+    
+=== Using in layouts
 
-=== Combinations
+==== Cache Busting
 
-At times, it is useful to combine multiple stylesheets and serve them as one resource.  For example you may have two sets of stylesheets: one for traditional web views and one for mobile web views.  Rails' provides the :cache option on 'stylesheet_link_tag' helper to provide this function, ie:
+Rails does a lot of helpful things with 'stylesheet_link_tag' to help reference your stylesheets into your layouts - things like cache busting stylesheet hrefs.  However, Rails' will only cache bust your stylesheets if the file exists in the public/stylesheets directory.  When using Rack::Less a file may never exist at that path or, when caching is used, only exist after the initial request.
+
+To help provide this behavior, Rack::Less provides a helper for generating reference paths to your stylesheets.
+
+    # equivalent to: stylesheet_link_tag 'reset'
+    stylesheet_link_tag Rack::Less.stylesheet('reset')
+
+==== Combinations
+
+At times, it is useful to combine multiple stylesheets and serve them as one resource.  For example you may have two sets of stylesheets: one for traditional web views and one for mobile web views.  Rails' provides the :cache option on 'stylesheet_link_tag' helper to provide this function.
 
     stylesheet_link_tag 'reset', 'common', 'app_web', :cache => 'web'
     stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile', :cache => 'mobile'
@@ -96,13 +108,13 @@ Rack::Less uses combinations, in conjunction with the :cache config setting, to 
       }
     end
 
-and stylesheet link tags like this, respectively:
+and stylesheet link tags like this:
 
     # equivalent to: stylesheet_link_tag 'reset', 'common', 'app_web'
-    stylesheet_link_tag Rack::Less.combinations('web')
+    stylesheet_link_tag Rack::Less.stylesheet('web')
     
     # equivalent to: stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile'
-    stylesheet_link_tag Rack::Less.combinations('mobile')
+    stylesheet_link_tag Rack::Less.stylesheet('mobile')
     
 If you configure Rack::Less to cache, with something like this:
 
@@ -111,10 +123,10 @@ If you configure Rack::Less to cache, with something like this:
 then the same stylesheet link tags behave like they have the :cache option set, respectively:
 
     # equivalent to: stylesheet_link_tag 'reset', 'common', 'app_web', :cache => 'web'
-    stylesheet_link_tag Rack::Less.combinations('web')
+    stylesheet_link_tag Rack::Less.stylesheet('web')
 
     # equivalent to: stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile', :cache => 'mobile'
-    stylesheet_link_tag Rack::Less.combinations('mobile')
+    stylesheet_link_tag Rack::Less.stylesheet('mobile')
 
 == Links
 
