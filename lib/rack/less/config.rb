@@ -75,6 +75,14 @@ module Rack::Less
       end
     end
     
+    def stylesheet(key)
+      if @combinations[key]
+        combinations(key.to_s)
+      else
+        stylesheet_filename(key.to_s)
+      end
+    end
+
     private
     
     def stylesheet_filename(key)

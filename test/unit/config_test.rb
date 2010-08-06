@@ -53,6 +53,7 @@ class ConfigTest < Test::Unit::TestCase
       assert_respond_to Rack::Less, :combinations
       assert_respond_to Rack::Less, :combination_timestamp
       assert_respond_to Rack::Less, :cache_bust
+      assert_respond_to Rack::Less, :stylesheet
     end
     
     context "given a new configuration" do
@@ -127,6 +128,35 @@ class ConfigTest < Test::Unit::TestCase
               config = Rack::Less::Config.new @settings
 
               assert_equal 'all.css', config.combinations('all')
+            end
+          end
+
+        end
+
+        context "#stylesheet" do
+          should "should be able to stylesheet references" do
+            config = Rack::Less::Config.new @settings
+
+            assert_equal 'one.css', config.stylesheet('one')
+            assert_equal 'wtf.css', config.stylesheet('wtf')
+          end
+
+          should "should be able to access combination values with a parameter" do
+            config = Rack::Less::Config.new @settings
+
+            assert_equal ['one.css', 'two.css'], config.stylesheet('all')
+          end
+
+          context "if cache setting is true" do
+            setup do
+              @settings[:cache] = true
+            end
+
+            should "use the lookup parameter instead of the value" do
+              config = Rack::Less::Config.new @settings
+
+              assert_equal 'one.css', config.stylesheet('one')
+              assert_equal 'all.css', config.stylesheet('all')
             end
           end
 

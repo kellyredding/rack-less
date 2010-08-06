@@ -44,6 +44,11 @@ module Rack::Less
       @@config.combinations(key)
     end
     
+    # Stylesheet helper, config convenience method
+    def stylesheet(key)
+      @@config.stylesheet(key)
+    end
+
     # Cache bust config convenience method
     def cache_bust
       @@config.cache_bust
