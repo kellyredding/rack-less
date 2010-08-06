@@ -160,6 +160,55 @@ class ConfigTest < Test::Unit::TestCase
             end
           end
 
+          context "when cache_bust is false" do
+            setup do
+              @settings[:cache_bust] = false
+            end
+
+            should "should not put in a cache bust value" do
+              config = Rack::Less::Config.new @settings
+
+              assert_equal 'one.css', config.stylesheet('one')
+            end
+          end
+
+          context "when cache_bust is nil" do
+            setup do
+              @settings[:cache_bust] = nil
+            end
+
+            should "should not put in a cache bust value" do
+              config = Rack::Less::Config.new @settings
+
+              assert_equal 'one.css', config.stylesheet('one')
+            end
+          end
+
+          context "when cache_bust is true" do
+            setup do
+              @settings[:cache_bust] = true
+            end
+
+            should "always put a timestamp value on the end of the href" do
+              config = Rack::Less::Config.new @settings
+
+              assert_match /one.css\?[0-9]+/, config.stylesheet('one')
+            end
+          end
+
+          context "when timestamp specified" do
+            setup do
+              @stamp = Time.now.to_i - 100_000
+              @settings[:cache_bust] = @stamp
+            end
+
+            should "always use that timestamp" do
+              config = Rack::Less::Config.new @settings
+
+              assert_equal ["one.css?#{@stamp}", "two.css?#{@stamp}"], config.stylesheet('all')
+            end
+
+          end
         end
 
       end      
