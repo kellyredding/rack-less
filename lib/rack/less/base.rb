@@ -8,7 +8,6 @@ module Rack::Less
 
     def initialize(app, options={})
       @app = app
-      default_cache_bust(@app)
       initialize_options options
       yield self if block_given?
       validate_options
@@ -54,27 +53,6 @@ module Rack::Less
       # ensure a source path is specified and does exists
       unless options.has_key?(option_name(:source)) and !options(:source).nil?
         raise(ArgumentError, "no :source option set")
-      end
-    end
-    
-    def default_cache_bust(app)
-      if Rack::Less.config.cache_bust.nil?
-        Rack::Less.config.cache_bust = if app.respond_to?(:root)
-          # if your rack app responds to root
-          # and root is a path that exists
-          mtime_cache_bust(app.root.to_s)
-        elsif defined(::Rails) && ::Rails.respond_to?(:root)
-          # if you are using Rails
-          mtime_cache_bust(::Rails.root.to_s)
-        else
-          false
-        end
-      end
-    end
-
-    def mtime_cache_bust(path)
-      if File.exists?(path)
-        File.mtime(path).to_i
       end
     end
     

@@ -31,14 +31,14 @@ module Rack::Less
     DEFAULTS = {
       :cache        => false,
       :compress     => false,
-      :combinations => {},
-      :cache_bust   => false
+      :combinations => {}
     }
 
     def initialize(settings={})
       ATTRIBUTES.each do |a|
         instance_variable_set("@#{a}", settings[a] || DEFAULTS[a])
-      end
+      end      
+      @cache_bust = default_cache_bust if @cache_bust.nil?
     end
     
     # <b>DEPRECATED:</b> Please use <tt>cache_bust</tt> instead.
@@ -97,6 +97,26 @@ module Rack::Less
         end.to_s
       end
       filename
+    end
+    
+    def default_cache_bust
+      if defined?(::Sinatra) && defined?(::Sinatra::Application)
+        app_root_cache_bust(::Sinatra::Application)
+      elsif defined?(::Rails)
+        app_root_cache_bust(::Rails)
+      end || false
+    end
+    
+    def app_root_cache_bust(app)
+      if app.respond_to?(:root)
+        mtime_cache_bust(app.root.to_s)
+      end
+    end
+    
+    def mtime_cache_bust(path)
+      if File.exists?(path)
+        File.mtime(path).to_i
+      end
     end
     
   end
