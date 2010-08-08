@@ -39,28 +39,17 @@ Add this to your `config/environment.rb`:
 Add any configs in an initializer (optional - use as necessary):
 
     Rack::Less.configure do |config|
-      config.cache = true
-      # additional configs ...
+      # for example
+      config.cache = Rails.configuration.action_controller.perform_caching
+      if Rails.env.development?
+        config.cache_bust = true
+      end
     end
 
 You should now see `Rack::Less` listed in the middleware pipeline:
 
     rake middleware
     
-== Available Options
-
-* :*root* ["."]
-  - The app root.  The reference point for the source and public options.
-
-* :*source* ['app/stylesheets']
-  - The path (relative to the root) where LESS source files are located
-
-* :*public* ['public']
-  - The path where static files are located
-
-* :*hosted_at* ['/stylesheets']
-  - The public HTTP path for hosted stylesheets.
-
 == Available Configurations
 
 * .*cache* [false]
@@ -81,6 +70,20 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     - :*nil* - change cache bust value if the file is modified (similar to Rails' stylesheet_link_tag)
     - :*<any other value>* - add the value as "foo.css?<value>"
     
+== Available Options
+
+* :*root* ["."]
+  - The app root.  The reference point for the source and public options.
+
+* :*source* ['app/stylesheets']
+  - The path (relative to the root) where LESS source files are located
+
+* :*public* ['public']
+  - The path where static files are located
+
+* :*hosted_at* ['/stylesheets']
+  - The public HTTP path for hosted stylesheets.
+
 == Using in layouts
 
 === Cache Busting
