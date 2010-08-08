@@ -75,15 +75,15 @@ You should now see `Rack::Less` listed in the middleware pipeline:
   - Directives for combining the output of many stylesheets and serving them as a single resource.
 
 * .*cache_bust* [nil]
-  - Directives for timestamping (cache-busting) while using combinations
+  - Directives for timestamping (cache-busting) stylesheet references
     - :*false* - don't explicitly cache bust (no value added)
     - :*true* - use Time.now.to_i as the explicit value (will never cache)
     - :*nil* - change cache bust value if the file is modified (similar to Rails' stylesheet_link_tag)
     - :*<any other value>* - add the value as "foo.css?<value>"
     
-=== Using in layouts
+== Using in layouts
 
-==== Cache Busting
+=== Cache Busting
 
 Rails does a lot of helpful things with 'stylesheet_link_tag' to help reference your stylesheets into your layouts - things like cache busting stylesheet hrefs.  However, Rails' will only cache bust your stylesheets if the file exists in the public/stylesheets directory.  When using Rack::Less a file may never exist at that path or, when caching is used, only exist after the initial request.
 
@@ -92,7 +92,7 @@ To help provide this behavior, Rack::Less provides a helper for generating refer
     # equivalent to: stylesheet_link_tag 'reset'
     stylesheet_link_tag Rack::Less.stylesheet('reset')
 
-==== Combinations
+=== Combinations
 
 At times, it is useful to combine multiple stylesheets and serve them as one resource.  For example you may have two sets of stylesheets: one for traditional web views and one for mobile web views.  Rails' provides the :cache option on 'stylesheet_link_tag' helper to provide this function.
 
