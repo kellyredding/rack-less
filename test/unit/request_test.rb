@@ -1,13 +1,13 @@
-require "test_helper"
+require "test/test_helper"
 require 'rack/less/request'
 
 class RequestTest < Test::Unit::TestCase
 
   context 'Rack::Less::Request' do
-    setup do 
+    setup do
       @defaults = env_defaults
     end
-    
+
     context "basic object" do
       should "have some attributes" do
         [ :options,
@@ -20,26 +20,34 @@ class RequestTest < Test::Unit::TestCase
           :for_less?
         ].each do |a|
           assert_respond_to less_request("GET", "/foo.css"), a, "request does not respond to #{a.inspect}"
-        end   
+        end
       end
-      
-      should "know it's resource name" do
-        assert_equal 'foo', less_request("GET", "/foo.css").path_resource_name
-        assert_equal 'bar', less_request("GET", "/foo/bar.css").path_resource_name
-      end
-      
+
       should "know it's resource format" do
         assert_equal '.css', less_request("GET", "/foo.css").path_resource_format
         assert_equal '.css', less_request("GET", "/foo/bar.css").path_resource_format
       end
+
+      should "know it's resource name" do
+        assert_equal 'foo', less_request("GET", "/foo.css").path_resource_name
+        assert_equal 'bar', less_request("GET", "/foo/bar.css").path_resource_name
+        assert_equal 'awesome', less_request("GET", "/stylesheets/awesome.css").path_resource_name
+        assert_equal 'awesome', less_request("GET", "/stylesheets/something/really/awesome.css").path_resource_name
+      end
+
+      should "know it's resource source" do
+        assert_equal '/foo', less_request("GET", "/foo/bar.css").path_resource_source
+        assert_equal '', less_request("GET", "/stylesheets/awesome.css").path_resource_source
+        assert_equal '/something/really', less_request("GET", "/stylesheets/something/really/awesome.css").path_resource_source
+      end
     end
-    
+
     context "#source " do
       should "match :compress settings with Rack::Less:Config" do
         req = less_request("GET", "/stylesheets/normal.css")
         assert_equal Rack::Less.config.compress?, req.source.compress?
       end
-      
+
       should "set it's cache value to nil when Rack::Less not configured to cache" do
         Rack::Less.config = Rack::Less::Config.new
         req = less_request("GET", "/stylesheets/normal.css")
@@ -52,12 +60,12 @@ class RequestTest < Test::Unit::TestCase
         Rack::Less.config = Rack::Less::Config.new :cache => true
         req = less_request("GET", "/stylesheets/normal.css")
         cache_path = File.join(req.options(:root), req.options(:public), req.options(:hosted_at))
-        
+
         assert_equal true, req.source.cache?
         assert_equal cache_path, req.source.cache
       end
     end
-    
+
     should_not_be_a_valid_rack_less_request({
       :method      => "POST",
       :resource    => "/foo.html",
@@ -69,7 +77,7 @@ class RequestTest < Test::Unit::TestCase
       :resource    => "/foo.css",
       :description => "a css resource"
     })
-    
+
     should_not_be_a_valid_rack_less_request({
       :method      => "GET",
       :resource    => "/foo.css",

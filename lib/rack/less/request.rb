@@ -12,7 +12,7 @@ module Rack::Less
 
   class Request < Rack::Request
     include Rack::Less::Options
-    
+
     CSS_PATH_FORMATS = ['.css']
 
     # The HTTP request method. This is the standard implementation of this
@@ -22,21 +22,25 @@ module Rack::Less
     def request_method
       @env['REQUEST_METHOD']
     end
-    
+
     def path_info
       @env['PATH_INFO']
     end
-    
+
     def http_accept
       @env['HTTP_ACCEPT']
     end
-    
+
+    def path_resource_format
+      File.extname(path_info)
+    end
+
     def path_resource_name
       File.basename(path_info, path_resource_format)
     end
-    
-    def path_resource_format
-      File.extname(path_info)
+
+    def path_resource_source
+      File.dirname(path_info).gsub(/#{options(:hosted_at)}/, '')
     end
 
     def cache
@@ -64,7 +68,7 @@ module Rack::Less
     def hosted_at?
       File.basename(File.dirname(path_info)) == File.basename(options(:hosted_at))
     end
-    
+
     def exists?
       File.exists?(File.join(cache, "#{path_resource_name}#{path_resource_format}"))
     end
@@ -81,6 +85,6 @@ module Rack::Less
       !exists? &&
       !source.files.empty?
     end
-    
+
   end
 end
