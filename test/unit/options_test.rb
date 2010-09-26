@@ -1,15 +1,15 @@
-require "test_helper"
+require "test/helper"
 require 'rack/less/options'
 require 'fixtures/mock_options'
 
 class OptionsTest < Test::Unit::TestCase
   context 'Rack::Less::Options' do
     setup { @options = MockOptions.new }
-    
+
     should "use a namespace" do
       assert_equal 'rack-less', Rack::Less::Options::RACK_ENV_NS
     end
-    
+
     should "provide an option_name helper" do
       assert_respond_to MockOptions, :option_name
     end
@@ -17,13 +17,13 @@ class OptionsTest < Test::Unit::TestCase
     should "provide defaults" do
       assert_respond_to MockOptions, :defaults
     end
-    
+
     should "allow access to the options" do
       assert_respond_to @options, :options, 'no #options accessor'
       assert_kind_of Hash, @options.options, '#options is not a Hash'
       assert_equal MockOptions.defaults[MockOptions.option_name(:source)], @options.options(:source)
     end
-    
+
     { :root => ".",
       :source => 'app/stylesheets',
       :public => 'public',

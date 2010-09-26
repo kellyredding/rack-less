@@ -1,4 +1,4 @@
-require "test/test_helper"
+require "test/helper"
 require 'rack/less/source'
 
 class SourceTest < Test::Unit::TestCase

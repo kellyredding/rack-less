@@ -1,5 +1,5 @@
-require "test/test_helper"
-require "test/test_app_helper"
+require "test/helper"
+require "test/app_helper"
 require 'test/fixtures/sinatra/app'
 
 class SinatraTest < Test::Unit::TestCase

@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'rake/gempackagetask'
-require 'rake/testtask'
+require 'simple_gem/testtasks'
 
 require 'lib/rack/less/version'
 
@@ -23,6 +23,7 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency("rack-test", [">= 0.5.3"])
   s.add_development_dependency("webrat", [">= 0.6.0"])
   s.add_development_dependency("yui-compressor", [">=0.9.1"])
+  s.add_development_dependency("kelredd-simple-gem", [">= 0.7.0"])
 
   s.add_dependency("rack", [">= 0.4"])
   s.add_dependency("less", [">= 1.2.21"])
@@ -32,28 +33,7 @@ Rake::GemPackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 
-Rake::TestTask.new do |t|
-  t.libs << 'test'
-  t.test_files = FileList["test/**/*_test.rb"]
-  t.verbose = true
-end
-
-begin
-  require 'rcov/rcovtask'
-
-  Rcov::RcovTask.new(:coverage) do |t|
-    t.libs       = ['test']
-    t.test_files = FileList["test/**/*_test.rb"]
-    t.verbose    = true
-    t.rcov_opts  = ['--text-report', "-x #{Gem.path}", '-x /Library/Ruby', '-x /usr/lib/ruby']
-  end
-  
-  task :default => :coverage
-  
-rescue LoadError
-  warn "\n**** Install rcov (sudo gem install relevance-rcov) to get coverage stats ****\n"
-  task :default => :test
-end
+SimpleGem::TestTasks.new
 
 desc 'Generate the gemspec to serve this gem'
 task :gemspec do
@@ -61,3 +41,5 @@ task :gemspec do
   File.open(file, 'w') {|f| f << spec.to_ruby }
   puts "Created gemspec: #{file}"
 end
+
+task :default => :gem
