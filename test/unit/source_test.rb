@@ -1,9 +1,9 @@
-require "test_helper"
+require "test/test_helper"
 require 'rack/less/source'
 
 class SourceTest < Test::Unit::TestCase
   context 'Rack::Less::Source' do
-    setup do 
+    setup do
       @source_folder = file_path('test','fixtures','sinatra','app','stylesheets')
       @cache = file_path('test','fixtures','sinatra','public','stylesheets')
     end
@@ -19,14 +19,15 @@ class SourceTest < Test::Unit::TestCase
         Rack::Less::Source.new('foo', :folder => @source_folder)
       end
     end
-    
+
     should "accept both .less and .css extensions, prefering .less over .css though" do
       assert_equal [:less, :css], Rack::Less::Source::PREFERRED_EXTENSIONS
     end
-    
+
     context "object" do
       setup do
         @basic = Rack::Less::Source.new('basic', :folder => @source_folder)
+        @nested = Rack::Less::Source.new('this/source/is/nested', :folder => @source_folder)
         @compressed = Rack::Less::Source.new('compressed', {
           :folder => @source_folder,
           :compress => true
@@ -37,19 +38,20 @@ class SourceTest < Test::Unit::TestCase
           :compress => false
         })
       end
-      
-      should "have accessors for name and cache values" do 
-        assert_respond_to @basic, :css_name
-        assert_equal 'basic', @basic.css_name
+
+      should "have accessors for path and cache values" do
+        assert_respond_to @basic, :path
+        assert_equal 'basic', @basic.path
         assert_respond_to @basic, :cache
+        assert_equal 'this/source/is/nested', @nested.path
       end
-      
+
       should "have an option for using compression" do
         assert_equal false, @basic.compress?, 'the basic app should not compress'
         assert_equal true, @compressed.compress?, 'the compressed app should compress'
         assert_equal false, @cached.compress?, 'the cached app should not compress'
       end
-      
+
       should "have an option for caching output to files" do
         assert_equal false, @basic.cache?, 'the basic app should not cache'
         assert_equal true, @cached.cache?, 'the cached app should cache'
@@ -65,7 +67,7 @@ class SourceTest < Test::Unit::TestCase
         assert_respond_to @basic, :css, 'engine does not respond to :css'
       end
     end
-    
+
     context "with no corresponding source" do
       setup do
         @none = Rack::Less::Source.new('none', :folder => @source_folder)
@@ -81,6 +83,7 @@ class SourceTest < Test::Unit::TestCase
     end
 
     should_compile_source('normal', "needing to be compiled")
+    should_compile_source('nested/file', "that is nested, needing to be compiled")
     should_compile_source('css', "that is a CSS stylesheet")
 
 

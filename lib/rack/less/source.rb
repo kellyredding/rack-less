@@ -14,22 +14,22 @@ module Rack::Less
   # to compile and a path to the source files,
   # will returns corresponding compiled LESS CSS
   class Source
-    
+
     # prefer source files with the .less extension
     # but also accept files with the .css extension
     PREFERRED_EXTENSIONS = [:less, :css]
-    
+
     YUI_OPTS = {}
-    
-    attr_reader :css_name
-    
-    def initialize(css_name, options={})
-      @css_name = css_name
+
+    attr_reader :path
+
+    def initialize(path, options={})
+      @path   = path
       @compress = options[:compress]
       @cache    = options[:cache]
       @folder   = get_required_path(options, :folder)
     end
-    
+
     def compress?
       !!@compress
     end
@@ -39,18 +39,18 @@ module Rack::Less
     def cache
       @cache
     end
-    
+
     # Use named css sources before using combination sources
     def files
       @files ||= (css_sources.empty? ? combination_sources : css_sources)
     end
-    
+
     def compiled
       @compiled ||= begin
         compiled_css = files.collect do |file_path|
           Less::Engine.new(File.new(file_path)).to_css
         end.join("\n")
-        
+
         compiled_css = case @compress
         when :whitespace, true
           compiled_css.delete("\n")
@@ -64,58 +64,58 @@ module Rack::Less
           compiled_css
         end
 
-        if cache? && !File.exists?(cf = File.join(@cache, "#{@css_name}.css"))
+        if cache? && !File.exists?(cf = File.join(@cache, "#{@path}.css"))
           FileUtils.mkdir_p(@cache)
           File.open(cf, "w") do |file|
             file.write(compiled_css)
           end
         end
-        
+
         compiled_css
       end
     end
     alias_method :to_css, :compiled
     alias_method :css, :compiled
-    
+
     protected
-    
+
     # Preferred, existing source files matching the css name
     def css_sources
-      @css_sources ||= preferred_sources([@css_name])
+      @css_sources ||= preferred_sources([@path])
     end
-    
+
     # Preferred, existing source files matching a corresponding
     # Rack::Less::Config combination directive, if any
     def combination_sources
-      @combination_sources ||= preferred_sources(Rack::Less.config.combinations[@css_name] || [])
+      @combination_sources ||= preferred_sources(Rack::Less.config.combinations[@path] || [])
     end
-    
+
     private
-    
-    # Given a list of file names, return a list of
-    # existing source files with the corresponding names
+
+    # Given a list of sources, return a list of
+    # existing source files with the corresponding source paths
     # honoring the preferred extension list
-    def preferred_sources(file_names)
-      file_names.collect do |name|
+    def preferred_sources(paths)
+      paths.collect do |source_path|
         PREFERRED_EXTENSIONS.inject(nil) do |source_file, extension|
           source_file || begin
-            path = File.join(@folder, "#{name}.#{extension}")
+            path = File.join(@folder, "#{source_path}.#{extension}")
             File.exists?(path) ? path : nil
           end
         end
       end.compact
     end
-    
+
     def get_required_path(options, path_key)
       unless options.has_key?(path_key)
         raise(ArgumentError, "no :#{path_key} option specified")
       end
       unless File.exists?(options[path_key])
-        raise(ArgumentError, "the :#{path_key} ('#{options[path_key]}') does not exist") 
+        raise(ArgumentError, "the :#{path_key} ('#{options[path_key]}') does not exist")
       end
       options[path_key]
     end
-    
+
   end
-  
+
 end
