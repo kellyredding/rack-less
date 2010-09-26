@@ -33,16 +33,16 @@ module Rack::Less
     def call!(env)
       @default_options.each { |k,v| env[k] ||= v }
       @env = env
-      
+
       if (@request = Request.new(@env.dup.freeze)).for_less?
         Response.new(@env.dup.freeze, @request.source.to_css).to_rack
       else
         @app.call(env)
       end
     end
-    
+
     private
-    
+
     def validate_options
       # ensure a root path is specified and does exists
       unless options.has_key?(option_name(:root)) and !options(:root).nil?
@@ -55,6 +55,6 @@ module Rack::Less
         raise(ArgumentError, "no :source option set")
       end
     end
-    
+
   end
 end

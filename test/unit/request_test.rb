@@ -13,8 +13,9 @@ class RequestTest < Test::Unit::TestCase
         [ :options,
           :request_method,
           :path_info,
-          :path_resource_name,
           :path_resource_format,
+          :path_resource_name,
+          :path_resource_source,
           :source,
           :for_css?,
           :for_less?
@@ -36,9 +37,9 @@ class RequestTest < Test::Unit::TestCase
       end
 
       should "know it's resource source" do
-        assert_equal '/foo', less_request("GET", "/foo/bar.css").path_resource_source
-        assert_equal '', less_request("GET", "/stylesheets/awesome.css").path_resource_source
-        assert_equal '/something/really', less_request("GET", "/stylesheets/something/really/awesome.css").path_resource_source
+        assert_equal 'foo/bar', less_request("GET", "/foo/bar.css").path_resource_source
+        assert_equal 'awesome', less_request("GET", "/stylesheets/awesome.css").path_resource_source
+        assert_equal 'something/really/awesome', less_request("GET", "/stylesheets/something/really/awesome.css").path_resource_source
       end
     end
 

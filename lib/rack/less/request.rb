@@ -40,7 +40,7 @@ module Rack::Less
     end
 
     def path_resource_source
-      File.dirname(path_info).gsub(/#{options(:hosted_at)}/, '')
+      File.join(File.dirname(path_info).gsub(/#{options(:hosted_at)}/, ''), path_resource_name).gsub(/^\//, '')
     end
 
     def cache
@@ -55,7 +55,7 @@ module Rack::Less
           :cache    => Rack::Less.config.cache? ? cache : nil,
           :compress => Rack::Less.config.compress?
         }
-        Source.new(path_resource_name, source_opts)
+        Source.new(path_resource_source, source_opts)
       end
     end
 
@@ -66,11 +66,11 @@ module Rack::Less
     end
 
     def hosted_at?
-      File.basename(File.dirname(path_info)) == File.basename(options(:hosted_at))
+      path_info =~ /^#{options(:hosted_at)}\//
     end
 
     def exists?
-      File.exists?(File.join(cache, "#{path_resource_name}#{path_resource_format}"))
+      File.exists?(File.join(cache, "#{path_resource_source}#{path_resource_format}"))
     end
 
     # Determine if the request is for existing LESS CSS file
