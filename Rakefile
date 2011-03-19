@@ -1,4 +1,7 @@
 require 'rubygems'
+require 'bundler'
+Bundler.setup
+
 require 'rake/gempackagetask'
 require 'simple_gem/testtasks'
 

@@ -1,0 +1,49 @@
+PATH
+  remote: .
+  specs:
+    rack-less (1.5.0)
+      less (>= 1.2.21)
+      rack (>= 0.4)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    kelredd-simple-gem (1.0.0)
+      bundler (~> 1.0)
+    leftright (0.9.0)
+    less (1.2.21)
+      mutter (>= 0.4.2)
+      treetop (>= 1.4.2)
+    mutter (0.5.3)
+    nokogiri (1.4.4)
+    polyglot (0.3.1)
+    rack (1.2.2)
+    rack-test (0.5.7)
+      rack (>= 1.0)
+    shoulda (2.11.3)
+    sinatra (1.2.1)
+      rack (~> 1.1)
+      tilt (>= 1.2.2, < 2.0)
+    tilt (1.2.2)
+    treetop (1.4.9)
+      polyglot (>= 0.3.1)
+    webrat (0.7.3)
+      nokogiri (>= 1.2.0)
+      rack (>= 1.0)
+      rack-test (>= 0.5.3)
+    yui-compressor (0.9.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  kelredd-simple-gem (>= 0.7.0)
+  leftright (>= 0.0.6)
+  less (>= 1.2.21)
+  rack (>= 0.4)
+  rack-less!
+  rack-test (>= 0.5.3)
+  shoulda (>= 2.10.2)
+  sinatra (>= 0.9.4)
+  webrat (>= 0.6.0)
+  yui-compressor (>= 0.9.1)
