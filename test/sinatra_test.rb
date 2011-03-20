@@ -37,6 +37,18 @@ class SinatraTest < Test::Unit::TestCase
       should_respond_with_compiled_css
     end
 
+    context "requesting a really nested valid LESS" do
+      setup do
+        app.use Rack::Less,
+          :root => file_path('test','fixtures','sinatra')
+
+        @compiled = File.read(file_path('test','fixtures','sinatra','app','stylesheets', 'nested', 'really', 'really_compiled.css'))
+        @response = visit "/stylesheets/nested/really/really.css"
+      end
+
+      should_respond_with_compiled_css
+    end
+
   end
 
 end

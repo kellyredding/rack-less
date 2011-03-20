@@ -21,10 +21,10 @@ module Rack::Less
 
     YUI_OPTS = {}
 
-    attr_reader :path
+    attr_reader :css_resource
 
-    def initialize(path, options={})
-      @path   = path
+    def initialize(css_resource, options={})
+      @css_resource = css_resource.gsub(/^\/+/, '')
       @compress = options[:compress]
       @cache    = options[:cache]
       @folder   = get_required_path(options, :folder)
@@ -64,8 +64,8 @@ module Rack::Less
           compiled_css
         end
 
-        if cache? && !File.exists?(cf = File.join(@cache, "#{@path}.css"))
-          FileUtils.mkdir_p(@cache)
+        if cache? && !File.exists?(cf = File.join(@cache, "#{@css_resource}.css"))
+          FileUtils.mkdir_p(File.dirname(cf))
           File.open(cf, "w") do |file|
             file.write(compiled_css)
           end
@@ -81,13 +81,13 @@ module Rack::Less
 
     # Preferred, existing source files matching the css name
     def css_sources
-      @css_sources ||= preferred_sources([@path])
+      @css_sources ||= preferred_sources([*@css_resource])
     end
 
     # Preferred, existing source files matching a corresponding
     # Rack::Less::Config combination directive, if any
     def combination_sources
-      @combination_sources ||= preferred_sources(Rack::Less.config.combinations[@path] || [])
+      @combination_sources ||= preferred_sources(Rack::Less.config.combinations[@css_resource] || [])
     end
 
     private

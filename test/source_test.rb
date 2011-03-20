@@ -28,6 +28,7 @@ class SourceTest < Test::Unit::TestCase
       setup do
         @basic = Rack::Less::Source.new('basic', :folder => @source_folder)
         @nested = Rack::Less::Source.new('this/source/is/nested', :folder => @source_folder)
+        @ugly = Rack::Less::Source.new('//this/source/is/ugly', :folder => @source_folder)
         @compressed = Rack::Less::Source.new('compressed', {
           :folder => @source_folder,
           :compress => true
@@ -40,10 +41,11 @@ class SourceTest < Test::Unit::TestCase
       end
 
       should "have accessors for path and cache values" do
-        assert_respond_to @basic, :path
-        assert_equal 'basic', @basic.path
+        assert_respond_to @basic, :css_resource
+        assert_equal 'basic', @basic.css_resource
         assert_respond_to @basic, :cache
-        assert_equal 'this/source/is/nested', @nested.path
+        assert_equal 'this/source/is/nested', @nested.css_resource
+        assert_equal 'this/source/is/ugly', @ugly.css_resource
       end
 
       should "have an option for using compression" do
@@ -118,6 +120,7 @@ class SourceTest < Test::Unit::TestCase
 
     context "with caching" do
       setup do
+        FileUtils.rm_rf(File.dirname(@cache)) if File.exists?(File.dirname(@cache))
         @expected = Rack::Less::Source.new('normal', {
           :folder => @source_folder,
           :cache => @cache
@@ -125,7 +128,7 @@ class SourceTest < Test::Unit::TestCase
         @cached_file = File.join(@cache, "normal.css")
       end
       teardown do
-        FileUtils.rm(@cached_file) if File.exists?(@cached_file)
+        FileUtils.rm_rf(File.dirname(@cache)) if File.exists?(File.dirname(@cache))
       end
 
       should "store the compiled css to a file in the cache" do
