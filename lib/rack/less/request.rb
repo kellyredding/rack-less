@@ -23,28 +23,42 @@ module Rack::Less
       @env['REQUEST_METHOD']
     end
 
-    def path_info
-      @env['PATH_INFO']
-    end
-
     def http_accept
       @env['HTTP_ACCEPT']
     end
 
-    def path_resource_format
-      File.extname(path_info)
+    def path_info
+      @env['PATH_INFO']
     end
 
-    def path_resource_name
-      File.basename(path_info, path_resource_format)
+    def hosted_at_option
+      # sanitized :hosted_at option
+      #  remove any trailing '/'
+      #  ensure single leading '/'
+      @hosted_at_option ||= options(:hosted_at).sub(/\/+$/, '').sub(/^\/*/, '/')
     end
 
-    def path_resource_source
-      File.join(File.dirname(path_info).gsub(/#{options(:hosted_at)}/, ''), path_resource_name).gsub(/^\//, '')
+    def path_info_resource
+      # sanitized path to the resource being requested
+      #  ensure single leading '/'
+      #  remove any resource format
+      #  ex:
+      #  '/something.css' => '/something'
+      #  '/nested/something.css' => '/nested/something'
+      #  '///something.css' => '/something'
+      #  '/nested///something.css' => '/nested/something'
+      @path_info_resource ||= File.join(
+        File.dirname(path_info.gsub(/\/+/, '/')).sub(/^#{hosted_at_option}/, ''),
+        File.basename(path_info.gsub(/\/+/, '/'), path_info_format)
+      ).sub(/^\/*/, '/')
+    end
+
+    def path_info_format
+      @path_info_format ||= File.extname(path_info.gsub(/\/+/, '/'))
     end
 
     def cache
-      File.join(options(:root), options(:public), options(:hosted_at))
+      File.join(options(:root), options(:public), hosted_at_option)
     end
 
     # The Rack::Less::Source that the request is for
@@ -55,35 +69,35 @@ module Rack::Less
           :cache    => Rack::Less.config.cache? ? cache : nil,
           :compress => Rack::Less.config.compress?
         }
-        Source.new(path_resource_source, source_opts)
+        Source.new(path_info_resource, source_opts)
       end
     end
 
     def for_css?
       (http_accept && http_accept.include?(Rack::Less::MIME_TYPE)) ||
       (media_type  && media_type.include?(Rack::Less::MIME_TYPE )) ||
-      CSS_PATH_FORMATS.include?(path_resource_format)
+      CSS_PATH_FORMATS.include?(path_info_format)
     end
 
     def hosted_at?
-      path_info =~ /^#{options(:hosted_at)}\//
+      path_info =~ /^#{hosted_at_option}\//
     end
 
-    def exists?
-      File.exists?(File.join(cache, "#{path_resource_source}#{path_resource_format}"))
+    def cached?
+      File.exists?(File.join(cache, "#{path_info_resource}#{path_info_format}"))
     end
 
-    # Determine if the request is for existing LESS CSS file
+    # Determine if the request is for a non-cached existing LESS CSS source file
     # This will be called on every request so speed is an issue
-    # => first check if the request is a GET on a css resource :hosted_at (fast)
-    # => don't process if a file already exists in :hosted_at
+    # => first check if the request is a GET on a css resource in :hosted_at (fast)
+    # => don't process if a file has already been cached
     # => otherwise, check for less source files that match the request (slow)
     def for_less?
-      get? &&
+      get? &&               # GET on css resource in :hosted_at (fast, check first)
       for_css? &&
       hosted_at? &&
-      !exists? &&
-      !source.files.empty?
+      !cached? &&           # resource not cached (little slower)
+      !source.files.empty?  # there is source for the resource (slow, check last)
     end
 
   end

@@ -11,12 +11,14 @@ class RequestTest < Test::Unit::TestCase
     context "basic object" do
       should "have some attributes" do
         [ :options,
+          :hosted_at_option,
           :request_method,
           :path_info,
-          :path_resource_format,
-          :path_resource_name,
-          :path_resource_source,
+          :path_info_format,
+          :path_info_resource,
           :source,
+          :hosted_at?,
+          :cached?,
           :for_css?,
           :for_less?
         ].each do |a|
@@ -25,21 +27,42 @@ class RequestTest < Test::Unit::TestCase
       end
 
       should "know it's resource format" do
-        assert_equal '.css', less_request("GET", "/foo.css").path_resource_format
-        assert_equal '.css', less_request("GET", "/foo/bar.css").path_resource_format
+        assert_equal '.css', less_request("GET", "/foo.css").path_info_format
+        assert_equal '.css', less_request("GET", "/foo/bar.css").path_info_format
+        assert_equal '', less_request("GET", "/foo/bar").path_info_format
       end
 
-      should "know it's resource name" do
-        assert_equal 'foo', less_request("GET", "/foo.css").path_resource_name
-        assert_equal 'bar', less_request("GET", "/foo/bar.css").path_resource_name
-        assert_equal 'awesome', less_request("GET", "/stylesheets/awesome.css").path_resource_name
-        assert_equal 'awesome', less_request("GET", "/stylesheets/something/really/awesome.css").path_resource_name
+      should "sanitize the :hosted_at options" do
+        req = less_request("GET", "/something.css")
+        req.options = {:hosted_at => "/here"}
+        assert_equal "/here", req.hosted_at_option
+
+        req = less_request("GET", "/something.css")
+        req.options = {:hosted_at => "//there"}
+        assert_equal "/there", req.hosted_at_option
+
+        req = less_request("GET", "/something.css")
+        req.options = {:hosted_at => "/where/"}
+        assert_equal "/where", req.hosted_at_option
+
+        req = less_request("GET", "/something.css")
+        req.options = {:hosted_at => "what/"}
+        assert_equal "/what", req.hosted_at_option
+
+        req = less_request("GET", "/something.css")
+        req.options = {:hosted_at => "why//"}
+        assert_equal "/why", req.hosted_at_option
       end
 
-      should "know it's resource source" do
-        assert_equal 'foo/bar', less_request("GET", "/foo/bar.css").path_resource_source
-        assert_equal 'awesome', less_request("GET", "/stylesheets/awesome.css").path_resource_source
-        assert_equal 'something/really/awesome', less_request("GET", "/stylesheets/something/really/awesome.css").path_resource_source
+      should "know it's resource" do
+        assert_equal '/something', less_request("GET", "/stylesheets/something.css").path_info_resource
+        assert_equal '/something.awesome', less_request("GET", "/stylesheets/something.awesome.css").path_info_resource
+        assert_equal '/nested/something', less_request("GET", "/stylesheets/nested/something.css").path_info_resource
+        assert_equal '/something/really/awesome', less_request("GET", "/stylesheets/something/really/awesome.css").path_info_resource
+        assert_equal '/something', less_request("GET", "/something.css").path_info_resource
+        assert_equal '/something', less_request("GET", "///something.css").path_info_resource
+        assert_equal '/nested/something', less_request("GET", "/nested/something.css").path_info_resource
+        assert_equal '/nested/something', less_request("GET", "/nested///something.css").path_info_resource
       end
     end
 
@@ -60,7 +83,7 @@ class RequestTest < Test::Unit::TestCase
       should "set it's cache to the appropriate path when Rack::Less configured to cache" do
         Rack::Less.config = Rack::Less::Config.new :cache => true
         req = less_request("GET", "/stylesheets/normal.css")
-        cache_path = File.join(req.options(:root), req.options(:public), req.options(:hosted_at))
+        cache_path = File.join(req.options(:root), req.options(:public), req.hosted_at_option)
 
         assert_equal true, req.source.cache?
         assert_equal cache_path, req.source.cache
