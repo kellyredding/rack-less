@@ -1,13 +1,5 @@
-module RackLess
-  module Version
-    
-    MAJOR = 1
-    MINOR = 5
-    TINY  = 0
-    
-    def self.to_s # :nodoc:
-      [MAJOR, MINOR, TINY].join('.')
-    end
-    
+module Rack
+  module Less
+    VERSION = '1.5.0'
   end
 end
