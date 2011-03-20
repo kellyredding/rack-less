@@ -24,9 +24,9 @@ require 'rack/less/source'
 module Rack::Less
   MIME_TYPE = "text/css"
   @@config = Config.new
-  
+
   class << self
-    
+
     # Configuration accessors for Rack::Less
     # (see config.rb for details)
     def configure
@@ -38,12 +38,12 @@ module Rack::Less
     def config=(value)
       @@config = value
     end
-    
+
     # Combinations config convenience method
     def combinations(key=nil)
       @@config.combinations(key)
     end
-    
+
     # Stylesheet helper, config convenience method
     def stylesheet(key)
       @@config.stylesheet(key)
@@ -54,19 +54,13 @@ module Rack::Less
       @@config.cache_bust
     end
 
-    # <b>DEPRECATED:</b> Please use <tt>cache_bust</tt> instead.
-    def combination_timestamp
-      warn "[DEPRECATION] `combination_timestamp` is deprecated.  Please use `cache_bust` instead."
-      cache_bust
-    end
-    
   end
 
-  # Create a new Rack::Less middleware component 
+  # Create a new Rack::Less middleware component
   # => the +options+ Hash can be used to specify default configuration values
   # => (see Rack::Less::Options for possible key/values)
   def self.new(app, options={}, &block)
     Base.new(app, options, &block)
   end
-  
+
 end

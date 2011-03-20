@@ -51,7 +51,6 @@ class ConfigTest < Test::Unit::TestCase
       assert_respond_to Rack::Less, :config
       assert_respond_to Rack::Less, :config=
       assert_respond_to Rack::Less, :combinations
-      assert_respond_to Rack::Less, :combination_timestamp
       assert_respond_to Rack::Less, :cache_bust
       assert_respond_to Rack::Less, :stylesheet
     end
@@ -79,8 +78,7 @@ class ConfigTest < Test::Unit::TestCase
         assert_equal @traditional_config.cache, Rack::Less.config.cache
         assert_equal @traditional_config.compress, Rack::Less.config.compress
         assert_equal @traditional_config.combinations, Rack::Less.config.combinations
-        assert_equal @traditional_config.cache_bust, Rack::Less.config.combination_timestamp
-        assert_equal @traditional_config.combination_timestamp, Rack::Less.config.cache_bust
+        assert_equal @traditional_config.cache_bust, Rack::Less.config.cache_bust
       end
 
       should "allow Rack::Less to apply settings using a block" do
@@ -96,8 +94,7 @@ class ConfigTest < Test::Unit::TestCase
         assert_equal @traditional_config.cache, Rack::Less.config.cache
         assert_equal @traditional_config.compress, Rack::Less.config.compress
         assert_equal @traditional_config.combinations, Rack::Less.config.combinations
-        assert_equal @traditional_config.cache_bust, Rack::Less.config.combination_timestamp
-        assert_equal @traditional_config.combination_timestamp, Rack::Less.config.cache_bust
+        assert_equal @traditional_config.cache_bust, Rack::Less.config.cache_bust
       end
 
       context "helpers" do
