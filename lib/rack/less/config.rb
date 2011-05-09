@@ -31,14 +31,14 @@ module Rack::Less
     DEFAULTS = {
       :cache        => false,
       :compress     => false,
-      :combinations => {}
+      :combinations => {},
+      :cache_bust   => nil
     }
 
     def initialize(settings={})
       ATTRIBUTES.each do |a|
         instance_variable_set("@#{a}", settings[a] || DEFAULTS[a])
       end
-      @cache_bust = default_cache_bust if @cache_bust.nil?
     end
 
     def cache?
@@ -76,12 +76,12 @@ module Rack::Less
     def stylesheet_filename(key)
       filename = key.strip
       filename += ".css" unless filename.include?('.css')
-      if !filename.include?('?') && cache_bust
+      if !filename.include?('?') && self.cache_bust != false
         filename += "?"
-        filename += if cache_bust == true
+        filename += if self.cache_bust == true
           Time.now.to_i
         else
-          cache_bust
+          self.cache_bust ||= default_cache_bust
         end.to_s
       end
       filename
