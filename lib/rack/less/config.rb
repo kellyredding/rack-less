@@ -37,7 +37,7 @@ module Rack::Less
 
     def initialize(settings={})
       ATTRIBUTES.each do |a|
-        instance_variable_set("@#{a}", settings[a] || DEFAULTS[a])
+        instance_variable_set("@#{a}", settings[a].nil? ? DEFAULTS[a] : settings[a])
       end
     end
 
@@ -77,14 +77,19 @@ module Rack::Less
       filename = key.strip
       filename += ".css" unless filename.include?('.css')
       if !filename.include?('?') && self.cache_bust != false
-        filename += "?"
-        filename += if self.cache_bust == true
-          Time.now.to_i
-        else
-          self.cache_bust ||= default_cache_bust
-        end.to_s
+        if !(cb = cache_bust_value).empty?
+          filename += "?#{cb}"
+        end
       end
       filename
+    end
+
+    def cache_bust_value
+      if self.cache_bust == true
+        Time.now.to_i
+      else
+        self.cache_bust ||= default_cache_bust
+      end.to_s
     end
 
     def default_cache_bust
@@ -92,7 +97,7 @@ module Rack::Less
         app_root_cache_bust(::Sinatra::Application)
       elsif defined?(::Rails)
         app_root_cache_bust(::Rails)
-      end || false
+      end || ""
     end
 
     def app_root_cache_bust(app)

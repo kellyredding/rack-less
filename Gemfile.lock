@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rack-less (2.0.0)
+    rack-less (2.0.1)
       less (~> 1.2)
       rack (~> 1.0)
 
@@ -43,8 +43,6 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.0)
-  less (~> 1.2)
-  rack (~> 1.0)
   rack-less!
   rack-test (>= 0.5.3)
   sinatra (>= 0.9.4)

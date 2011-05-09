@@ -10,7 +10,7 @@ class ConfigTest < Test::Unit::TestCase
     { :cache => false,
       :compress => false,
       :combinations => {},
-      :cache_bust => false
+      :cache_bust => nil
     }.each do |k,v|
       should "default #{k} correctly" do
         assert_equal v, @config.send(k)
