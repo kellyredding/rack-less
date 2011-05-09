@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rack-less (2.0.1)
+    rack-less (2.0.2)
       less (~> 1.2)
       rack (~> 1.0)
 
