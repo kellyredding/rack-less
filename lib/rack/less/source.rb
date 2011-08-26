@@ -48,8 +48,12 @@ module Rack::Less
     def compiled
       @compiled ||= begin
         compiled_css = files.collect do |file_path|
+          opts = {
+            :paths => [ File.dirname(file_path) ],
+            :filename => File.basename(file_path)
+          }
           less = File.send(File.respond_to?(:binread) ? :binread : :read, file_path.to_s)
-          Less::Parser.new.parse(less).to_css(:compress => !!@compress)
+          Less::Parser.new(opts).parse(less).to_css(:compress => !!@compress)
         end.join("\n")
 
         compiled_css = case @compress

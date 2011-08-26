@@ -1,8 +1,10 @@
-@bad-blue: #5B83FF;
-@bad-light-blue: @bad-blue + #111;
+@import "../nested_import.less";
+@import "really_nested_import.less";
+
 
 #header {
   color: @bad-light-blue;
+  background-color: @white;
 }
 
 div {
