@@ -11,7 +11,7 @@ module Rack::Less
 
     # Rack response tuple accessors.
     attr_accessor :status, :headers, :body
-    
+
     class << self
 
       # Calculate appropriate content_length
@@ -22,7 +22,7 @@ module Rack::Less
           body.size
         end
       end
-      
+
     end
 
     # Create a Response instance given the env
@@ -36,7 +36,7 @@ module Rack::Less
       headers["Content-Type"] = Rack::Less::MIME_TYPE
       headers["Content-Length"] = self.class.content_length(body).to_s
     end
-    
+
     def to_rack
       [status, headers.to_hash, body]
     end

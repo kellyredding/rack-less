@@ -1,25 +1,27 @@
-require "test/helper"
+require "assert"
 require 'rack/less/options'
-require 'fixtures/mock_options'
+require 'test/fixtures/mock_options'
 
-class OptionsTest < Test::Unit::TestCase
-  context 'Rack::Less::Options' do
+module Rack::Less
+
+  class OptionsTest < Assert::Context
+    desc 'Rack::Less::Options'
     setup { @options = MockOptions.new }
 
     should "use a namespace" do
-      assert_equal 'rack-less', Rack::Less::Options::RACK_ENV_NS
+      assert_equal 'rack-less', Options::RACK_ENV_NS
     end
 
     should "provide an option_name helper" do
-      assert_respond_to MockOptions, :option_name
+      assert_respond_to :option_name, MockOptions
     end
 
     should "provide defaults" do
-      assert_respond_to MockOptions, :defaults
+      assert_respond_to :defaults, MockOptions
     end
 
     should "allow access to the options" do
-      assert_respond_to @options, :options, 'no #options accessor'
+      assert_respond_to :options, @options, 'no #options accessor'
       assert_kind_of Hash, @options.options, '#options is not a Hash'
       assert_equal MockOptions.defaults[MockOptions.option_name(:source)], @options.options(:source)
     end
@@ -34,20 +36,20 @@ class OptionsTest < Test::Unit::TestCase
       end
     end
 
-    context '#set' do
-      should "set a Symbol option as #{Rack::Less::Options::RACK_ENV_NS}.symbol" do
-        @options.set :foo, 'bar'
-        assert_equal 'bar', @options.options[MockOptions.option_name(:foo)]
-      end
-      should 'set a String option as string' do
-        @options.set 'foo.bar', 'baz'
-        assert_equal 'baz', @options.options['foo.bar']
-      end
-      should 'set all key/value pairs when given a Hash' do
-        @options.set :foo => 'bar', 'foo.bar' => 'baz'
-        assert_equal 'bar', @options.options[MockOptions.option_name(:foo)]
-        assert_equal 'baz', @options.options['foo.bar']
-      end
+    should "set a Symbol option as #{Options::RACK_ENV_NS}.symbol" do
+      @options.set :foo, 'bar'
+      assert_equal 'bar', @options.options[MockOptions.option_name(:foo)]
+    end
+
+    should 'set a String option as string' do
+      @options.set 'foo.bar', 'baz'
+      assert_equal 'baz', @options.options['foo.bar']
+    end
+
+    should 'set all key/value pairs when given a Hash' do
+      @options.set :foo => 'bar', 'foo.bar' => 'baz'
+      assert_equal 'bar', @options.options[MockOptions.option_name(:foo)]
+      assert_equal 'baz', @options.options['foo.bar']
     end
 
     should 'allow setting multiple options via assignment' do
@@ -57,4 +59,5 @@ class OptionsTest < Test::Unit::TestCase
     end
 
   end
+
 end

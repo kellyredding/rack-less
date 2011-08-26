@@ -1,11 +1,15 @@
-require "test/helper"
+require "assert"
 require 'rack/less/config'
 
-class ConfigTest < Test::Unit::TestCase
-  context 'Rack::Less::Config' do
-    setup do
-      @config = Rack::Less::Config.new
-    end
+module Rack::Less
+
+  class ConfigTests < Assert::Context
+    desc 'the rack-less config'
+    setup { @config = Config.new }
+    subject { @config }
+
+    should have_accessors :cache, :compress, :combinations, :cache_bust
+    should have_readers :cache?, :compress?
 
     { :cache => false,
       :compress => false,
@@ -15,17 +19,10 @@ class ConfigTest < Test::Unit::TestCase
       should "default #{k} correctly" do
         assert_equal v, @config.send(k)
       end
-
-      should "have an accessor for #{k}" do
-        assert_respond_to @config, k, "no reader for #{k}"
-        assert_respond_to @config, "#{k}=".to_sym, "no writer for #{k}"
-      end
     end
 
     should "provide boolean readers" do
-      assert_respond_to @config, :cache?, "no reader for :cache?"
       assert_equal !!@config.cache, @config.cache?
-      assert_respond_to @config, :compress?, "no reader for :compress?"
       assert_equal !!@config.compress, @config.compress?
     end
 
@@ -47,169 +44,134 @@ class ConfigTest < Test::Unit::TestCase
     end
 
     should "be accessible at Rack::Less class level" do
-      assert_respond_to Rack::Less, :configure
-      assert_respond_to Rack::Less, :config
-      assert_respond_to Rack::Less, :config=
-      assert_respond_to Rack::Less, :combinations
-      assert_respond_to Rack::Less, :cache_bust
-      assert_respond_to Rack::Less, :stylesheet
-    end
-
-    context "given a new configuration" do
-      setup do
-        @old_config = Rack::Less.config
-        @settings = {
-          :cache => true,
-          :compress => true,
-          :combinations => {
-            'all' => ['one', 'two']
-          },
-          :cache_bust => false
-        }
-        @traditional_config = Rack::Less::Config.new @settings
-      end
-      teardown do
-        Rack::Less.config = @old_config
-      end
-
-      should "allow Rack::Less to directly apply settings" do
-        Rack::Less.config = @traditional_config.dup
-
-        assert_equal @traditional_config.cache, Rack::Less.config.cache
-        assert_equal @traditional_config.compress, Rack::Less.config.compress
-        assert_equal @traditional_config.combinations, Rack::Less.config.combinations
-        assert_equal @traditional_config.cache_bust, Rack::Less.config.cache_bust
-      end
-
-      should "allow Rack::Less to apply settings using a block" do
-        Rack::Less.configure do |config|
-          config.cache    = true
-          config.compress = true
-          config.combinations = {
-            'all' => ['one', 'two']
-          }
-          config.cache_bust = false
-        end
-
-        assert_equal @traditional_config.cache, Rack::Less.config.cache
-        assert_equal @traditional_config.compress, Rack::Less.config.compress
-        assert_equal @traditional_config.combinations, Rack::Less.config.combinations
-        assert_equal @traditional_config.cache_bust, Rack::Less.config.cache_bust
-      end
-
-      context "helpers" do
-        setup do
-          @settings = {
-            :combinations => {
-              'all' => ['one', 'two']
-            },
-            :cache_bust => false
-          }
-        end
-
-        context "#combinations" do
-          should "should be able to access it's values with a parameter" do
-            config = Rack::Less::Config.new @settings
-
-            assert_equal [], config.combinations('one')
-            assert_equal [], config.combinations('wtf')
-            assert_equal ['one.css', 'two.css'], config.combinations('all')
-          end
-
-          context "if cache setting is true" do
-            setup do
-              @settings[:cache] = true
-            end
-
-            should "use the lookup parameter instead of the value" do
-              config = Rack::Less::Config.new @settings
-
-              assert_equal 'all.css', config.combinations('all')
-            end
-          end
-
-        end
-
-        context "#stylesheet" do
-          should "should be able to stylesheet references" do
-            config = Rack::Less::Config.new @settings
-
-            assert_equal 'one.css', config.stylesheet('one')
-            assert_equal 'wtf.css', config.stylesheet('wtf')
-          end
-
-          should "should be able to access combination values with a parameter" do
-            config = Rack::Less::Config.new @settings
-
-            assert_equal ['one.css', 'two.css'], config.stylesheet('all')
-          end
-
-          context "if cache setting is true" do
-            setup do
-              @settings[:cache] = true
-            end
-
-            should "use the lookup parameter instead of the value" do
-              config = Rack::Less::Config.new @settings
-
-              assert_equal 'one.css', config.stylesheet('one')
-              assert_equal 'all.css', config.stylesheet('all')
-            end
-          end
-
-          context "when cache_bust is false" do
-            setup do
-              @settings[:cache_bust] = false
-            end
-
-            should "should not put in a cache bust value" do
-              config = Rack::Less::Config.new @settings
-
-              assert_equal 'one.css', config.stylesheet('one')
-            end
-          end
-
-          context "when cache_bust is nil" do
-            setup do
-              @settings[:cache_bust] = nil
-            end
-
-            should "should not put in a cache bust value" do
-              config = Rack::Less::Config.new @settings
-
-              assert_equal 'one.css', config.stylesheet('one')
-            end
-          end
-
-          context "when cache_bust is true" do
-            setup do
-              @settings[:cache_bust] = true
-            end
-
-            should "always put a timestamp value on the end of the href" do
-              config = Rack::Less::Config.new @settings
-
-              assert_match /one.css\?[0-9]+/, config.stylesheet('one')
-            end
-          end
-
-          context "when timestamp specified" do
-            setup do
-              @stamp = Time.now.to_i - 100_000
-              @settings[:cache_bust] = @stamp
-            end
-
-            should "always use that timestamp" do
-              config = Rack::Less::Config.new @settings
-
-              assert_equal ["one.css?#{@stamp}", "two.css?#{@stamp}"], config.stylesheet('all')
-            end
-
-          end
-        end
-
-      end
+      assert_respond_to :configure, Rack::Less
+      assert_respond_to :config, Rack::Less
+      assert_respond_to :config=, Rack::Less
+      assert_respond_to :combinations, Rack::Less
+      assert_respond_to :cache_bust, Rack::Less
+      assert_respond_to :stylesheet, Rack::Less
     end
 
   end
+
+  class NewConfigTests < Assert::Context
+    desc "a new configuration"
+    setup do
+      @old_config = Rack::Less.config
+      @settings = {
+        :cache => true,
+        :compress => true,
+        :combinations => { 'all' => ['one', 'two'] },
+        :cache_bust => false
+      }
+      @traditional_config = Config.new @settings
+    end
+    teardown do
+      Rack::Less.config = @old_config
+    end
+
+    should "allow Rack::Less to directly apply settings" do
+      Rack::Less.config = @traditional_config.dup
+
+      assert_equal @traditional_config.cache, Rack::Less.config.cache
+      assert_equal @traditional_config.compress, Rack::Less.config.compress
+      assert_equal @traditional_config.combinations, Rack::Less.config.combinations
+      assert_equal @traditional_config.cache_bust, Rack::Less.config.cache_bust
+    end
+
+    should "allow Rack::Less to apply settings using a block" do
+      Rack::Less.configure do |config|
+        config.cache    = true
+        config.compress = true
+        config.combinations = { 'all' => ['one', 'two'] }
+        config.cache_bust = false
+      end
+
+      assert_equal @traditional_config.cache, Rack::Less.config.cache
+      assert_equal @traditional_config.compress, Rack::Less.config.compress
+      assert_equal @traditional_config.combinations, Rack::Less.config.combinations
+      assert_equal @traditional_config.cache_bust, Rack::Less.config.cache_bust
+    end
+
+  end
+
+  class ConfigCombinationStylesheetTests < ConfigTests
+    desc "a rack less config"
+    setup do
+      @settings = {
+        :combinations => { 'all' => ['one', 'two'] },
+        :cache_bust => false
+      }
+      @config = Rack::Less::Config.new @settings
+    end
+
+    should "access #combinations by name" do
+      assert_equal [], @config.combinations('one')
+      assert_equal [], @config.combinations('wtf')
+      assert_equal ['one.css', 'two.css'], @config.combinations('all')
+    end
+
+    should "generate #stylesheet references by name" do
+      assert_equal 'one.css', @config.stylesheet('one')
+      assert_equal 'wtf.css', @config.stylesheet('wtf')
+      assert_equal ['one.css', 'two.css'], @config.stylesheet('all')
+    end
+
+  end
+
+  class CachedConfigComboStylesheetTests < ConfigCombinationStylesheetTests
+    desc "when cache setting is true"
+    setup do
+      @settings[:cache] = true
+      @config = Rack::Less::Config.new @settings
+    end
+
+    should "use the lookup combos and stylesheets by the cache name" do
+      assert_equal 'all.css', @config.combinations('all')
+
+      assert_equal 'one.css', @config.stylesheet('one')
+      assert_equal 'all.css', @config.stylesheet('all')
+    end
+
+  end
+
+  class ConfigCacheBustTests < ConfigCombinationStylesheetTests
+
+    should "should not put in a cache bust value when cache_bust is false" do
+      @settings[:cache_bust] = false
+      config = Rack::Less::Config.new @settings
+
+      assert_equal 'one.css', config.stylesheet('one')
+    end
+
+    should "should not put in a cache bust value when cache_bust is nil" do
+      @settings[:cache_bust] = nil
+      config = Rack::Less::Config.new @settings
+
+      assert_equal 'one.css', config.stylesheet('one')
+    end
+
+    should "always put a timestamp value on the end of the href when cache_bust is true" do
+      @settings[:cache_bust] = true
+      config = Rack::Less::Config.new @settings
+
+      assert_match /one.css\?[0-9]+/, config.stylesheet('one')
+    end
+
+  end
+
+  class ConfigTimeStampTests < ConfigCombinationStylesheetTests
+    desc "when timestamp specified"
+    setup do
+      @stamp = Time.now.to_i - 100_000
+      @settings[:cache_bust] = @stamp
+      @config = Rack::Less::Config.new @settings
+    end
+
+    should "always use that timestamp" do
+      assert_equal ["one.css?#{@stamp}", "two.css?#{@stamp}"], @config.stylesheet('all')
+    end
+
+  end
+
 end

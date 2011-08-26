@@ -1,54 +1,55 @@
-require "test/helper"
+require "assert"
 require "test/app_helper"
 require 'test/fixtures/sinatra/app'
 
-class SinatraTest < Test::Unit::TestCase
+module Rack::Less
 
-  def app
-    @app ||= SinatraApp
-  end
-  def default_value(name)
-    Rack::Less::Base.defaults["#{Rack::Less::Options::RACK_ENV_NS}.#{name}"]
-  end
-
-  context "A Sinatra app using Rack::Less" do
-
-    context "requesting valid LESS" do
-      setup do
-        app.use Rack::Less,
-          :root => file_path('test','fixtures','sinatra')
-
-        @compiled = File.read(file_path('test','fixtures','sinatra','app','stylesheets', 'normal_compiled.css'))
-        @response = visit "/stylesheets/normal.css"
+  class SinatraTests < Assert::Context
+    desc "rack less hosted by a sinatra app"
+    setup do
+      Rack::Less.configure do |config|
+        config.compress = false
+        config.cache = false
       end
-
-      should_respond_with_compiled_css
+      app.use Rack::Less,
+        :root => file_path('test','fixtures','sinatra')
     end
 
-    context "requesting a nested valid LESS" do
-      setup do
-        app.use Rack::Less,
-          :root => file_path('test','fixtures','sinatra')
-
-        @compiled = File.read(file_path('test','fixtures','sinatra','app','stylesheets', 'nested', 'file_compiled.css'))
-        @response = visit "/stylesheets/nested/file.css"
-      end
-
-      should_respond_with_compiled_css
-    end
-
-    context "requesting a really nested valid LESS" do
-      setup do
-        app.use Rack::Less,
-          :root => file_path('test','fixtures','sinatra')
-
-        @compiled = File.read(file_path('test','fixtures','sinatra','app','stylesheets', 'nested', 'really', 'really_compiled.css'))
-        @response = visit "/stylesheets/nested/really/really.css"
-      end
-
-      should_respond_with_compiled_css
+    def app
+      @app ||= SinatraApp
     end
 
   end
+
+  class SinatraValidCss < SinatraTests
+    desc "requesting valid LESS"
+    setup do
+      @compiled = File.read(file_path('test','fixtures','sinatra','app','stylesheets', 'normal_compiled.css'))
+      @response = visit "/stylesheets/normal.css"
+    end
+
+    should_respond_with_compiled_css
+  end
+
+  class SinatraNestedValidCss < SinatraTests
+    desc "requesting a nested valid LESS"
+    setup do
+      @compiled = File.read(file_path('test','fixtures','sinatra','app','stylesheets', 'nested', 'file_compiled.css'))
+      @response = visit "/stylesheets/nested/file.css"
+    end
+
+    should_respond_with_compiled_css
+  end
+
+  class SinatraReallyNestedValidCss < SinatraTests
+    desc "requesting a really nested valid LESS"
+    setup do
+      @compiled = File.read(file_path('test','fixtures','sinatra','app','stylesheets', 'nested', 'really', 'really_compiled.css'))
+      @response = visit "/stylesheets/nested/really/really.css"
+    end
+
+    should_respond_with_compiled_css
+  end
+
 
 end
