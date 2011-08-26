@@ -4,6 +4,8 @@
 
 A better way to use LESS CSS in Ruby web apps.
 
+* Update: rack-less as of v3.x.x \ uses the latest version of the ruby less parser, https://github.com/cowboyd/less.rb (based on less.js).  To use the older ruby based parse, require rack-less ~> 2.0.
+
 == Installation
 
     $ gem install rack-less
@@ -16,7 +18,7 @@ or uses Rack::Builder to construct the application pipeline, simply require
 and use as follows:
 
     require 'rack/less'
-    
+
     # optional - use as necessary
     Rack::Less.configure do |config|
       config.compress = true
@@ -49,7 +51,7 @@ Add any configs in an initializer (optional - use as necessary):
 You should now see `Rack::Less` listed in the middleware pipeline:
 
     rake middleware
-    
+
 == Available Configurations
 
 * .*cache* [false]
@@ -69,7 +71,7 @@ You should now see `Rack::Less` listed in the middleware pipeline:
     - :*true* - use Time.now.to_i as the explicit value (will never cache)
     - :*nil* - change cache bust value if the file is modified (similar to Rails' stylesheet_link_tag)
     - :*<any other value>* - add the value as "foo.css?<value>"
-    
+
 == Available Options
 
 * :*root* ["."]
@@ -101,7 +103,7 @@ At times, it is useful to combine multiple stylesheets and serve them as one res
 
     stylesheet_link_tag 'reset', 'common', 'app_web', :cache => 'web'
     stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile', :cache => 'mobile'
-    
+
 Rack::Less uses combinations, in conjunction with the :cache config setting, to provide this function.  Combinations are configured using a hash, where the key is the resource name and the value is an array of names corresponding to stylesheets to combine as the named resource.  For the above example, use a configuration like this:
 
     Rack::Less.configure do |config|
@@ -115,14 +117,14 @@ and stylesheet link tags like this:
 
     # equivalent to: stylesheet_link_tag 'reset', 'common', 'app_web'
     stylesheet_link_tag Rack::Less.stylesheet('web')
-    
+
     # equivalent to: stylesheet_link_tag 'reset', 'common', 'iui', 'app_mobile'
     stylesheet_link_tag Rack::Less.stylesheet('mobile')
-    
+
 If you configure Rack::Less to cache, with something like this:
 
     Rack::Less.config.cache = true
-    
+
 then the same stylesheet link tags behave like they have the :cache option set, respectively:
 
     # equivalent to: stylesheet_link_tag 'reset', 'common', 'app_web', :cache => 'web'
