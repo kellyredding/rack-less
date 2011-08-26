@@ -102,7 +102,6 @@ module Rack::Less
   class SourceWhitespaceCompressTests < SourceTests
     desc "with whitespace compression"
     setup do
-      @compiled = File.read(File.join(@source_folder, "normal_compiled.css"))
       @compressed_normal = Rack::Less::Source.new('normal', {
         :folder => @source_folder,
         :compress => :whitespace
@@ -110,7 +109,7 @@ module Rack::Less
     end
 
     should "compress the compiled css" do
-      assert_equal @compiled.strip.delete("\n"), @compressed_normal.to_css, "the compiled css is compressed incorrectly"
+      assert_equal "#header{color:#6c94be;}div{width:2;}", @compressed_normal.to_css, "the compiled css is compressed incorrectly"
     end
   end
 

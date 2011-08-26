@@ -26,5 +26,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency("yui-compressor", [">=0.9.1"])
 
   s.add_dependency("rack", ["~> 1.0"])
-  s.add_dependency("less", ["~> 1.2"])
+  s.add_dependency("less", ["~> 2.0"])
 end
