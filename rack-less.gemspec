@@ -20,10 +20,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency("bundler", ["~> 1.0"])
   s.add_development_dependency("assert", ["~>0.3.0"])
 
-  s.add_development_dependency("sinatra", [">= 0.9.4"])
-  s.add_development_dependency("rack-test", [">= 0.5.3"])
-  s.add_development_dependency("webrat", [">= 0.6.0"])
-  s.add_development_dependency("yui-compressor", [">=0.9.1"])
+  s.add_development_dependency("sinatra", ["~> 1.2"])
+  s.add_development_dependency("rack-test", ["~> 0.6.0"])
+  s.add_development_dependency("webrat", ["~> 0.7.0"])
+  s.add_development_dependency("yui-compressor", ["~> 0.9.0"])
 
   s.add_dependency("rack", ["~> 1.0"])
   s.add_dependency("less", ["~> 2.0"])
