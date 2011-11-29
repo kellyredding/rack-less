@@ -38,6 +38,10 @@ module Rack::Less
       assert_equal Rack::Less::Response.content_length(@css), @response.headers['Content-Length'].to_i
     end
 
+    should "return a response body that responds to #each" do
+      assert_respond_to :each, @response.to_rack.last
+    end
+
   end
 
 end
