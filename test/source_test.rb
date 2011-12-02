@@ -138,7 +138,18 @@ module Rack::Less
         :cache => @cache
       }).to_css
       @cached_file = File.join(@cache, "normal.css")
+      @cached_file_time = File.mtime(@cached_file)
+      # shall wait some time to get a new mtime - sorry for letting you wait
+      sleep 2
+
+      Rack::Less::Source.new('normal', {
+        :folder => @source_folder,
+        :cache => @cache,
+        :update_cache => true
+      }).to_css
+      @updated_cached_file_time = File.mtime(@cached_file)
     end
+
     teardown do
       if File.exists?(File.dirname(@cache))
         FileUtils.rm_rf(File.dirname(@cache))
@@ -149,6 +160,7 @@ module Rack::Less
       assert File.exists?(@cache), 'the cache folder does not exist'
       assert File.exists?(@cached_file), 'the css was not cached to a file'
       assert_equal @expected.strip, File.read(@cached_file).strip, "the compiled css is incorrect"
+      assert @cached_file_time < @updated_cached_file_time, 'the cached file was not updated ' + @cached_file_time.to_s + ' >= ' + @updated_cached_file_time.to_s
     end
   end
 

@@ -57,6 +57,9 @@ You should now see `Rack::Less` listed in the middleware pipeline:
 * .*cache* [false]
   - Whether to cache the compilation output to a corresponding static file
 
+* .*update_cache* [false]
+  - Whether to force the cached file to be updated on each reqeust. Requires *cache* to be enabled.
+
 * .*compress* [false]
   - Whether or not to apply compression to the concatenation output
     - :*yui* - use YUI Compressor (gem install yui-compressor)
