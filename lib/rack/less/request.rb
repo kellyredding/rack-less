@@ -67,6 +67,7 @@ module Rack::Less
         source_opts = {
           :folder   => File.join(options(:root), options(:source)),
           :cache    => Rack::Less.config.cache? ? cache : nil,
+          :update_cache => Rack::Less.config.update_cache,
           :compress => Rack::Less.config.compress?
         }
         Source.new(path_info_resource, source_opts)
@@ -84,7 +85,7 @@ module Rack::Less
     end
 
     def cached?
-      File.exists?(File.join(cache, "#{path_info_resource}#{path_info_format}"))
+      !source.update_cache? && File.exists?(File.join(cache, "#{path_info_resource}#{path_info_format}"))
     end
 
     # Determine if the request is for a non-cached existing LESS CSS source file

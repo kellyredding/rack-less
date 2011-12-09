@@ -27,6 +27,7 @@ module Rack::Less
       @css_resource = css_resource.gsub(/^\/+/, '')
       @compress = options[:compress]
       @cache    = options[:cache]
+      @update_cache = options[:update_cache]
       @folder   = get_required_path(options, :folder)
     end
 
@@ -38,6 +39,9 @@ module Rack::Less
     end
     def cache
       @cache
+    end
+    def update_cache?
+      !!(@update_cache && cache?)
     end
 
     # Use named css sources before using combination sources
@@ -53,7 +57,7 @@ module Rack::Less
             :filename => File.basename(file_path)
           }
           less = File.send(File.respond_to?(:binread) ? :binread : :read, file_path.to_s)
-          Less::Parser.new(opts).parse(less).to_css(:compress => !!@compress)
+          Less::Parser.new(opts).parse(less).to_css(:compress => compress?)
         end.join("\n")
 
         compiled_css = case @compress
@@ -69,7 +73,7 @@ module Rack::Less
           compiled_css
         end
 
-        if cache? && !File.exists?(cf = File.join(@cache, "#{@css_resource}.css"))
+        if cache? && (!File.exists?(cf = File.join(@cache, "#{@css_resource}.css")) || update_cache?)
           FileUtils.mkdir_p(File.dirname(cf))
           File.open(cf, "w") do |file|
             file.write(compiled_css)
