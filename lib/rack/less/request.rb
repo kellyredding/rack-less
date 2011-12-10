@@ -90,13 +90,11 @@ module Rack::Less
     # Determine if the request is for a non-cached existing LESS CSS source file
     # This will be called on every request so speed is an issue
     # => first check if the request is a GET on a css resource in :hosted_at (fast)
-    # => don't process if a file has already been cached
     # => otherwise, check for less source files that match the request (slow)
     def for_less?
       get? &&               # GET on css resource in :hosted_at (fast, check first)
       for_css? &&
       hosted_at? &&
-      !cached? &&           # resource not cached (little slower)
       !source.files.empty?  # there is source for the resource (slow, check last)
     end
 

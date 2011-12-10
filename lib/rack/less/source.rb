@@ -53,7 +53,7 @@ module Rack::Less
             :filename => File.basename(file_path)
           }
           less = File.send(File.respond_to?(:binread) ? :binread : :read, file_path.to_s)
-          Less::Parser.new(opts).parse(less).to_css(:compress => !!@compress)
+          Less::Parser.new(opts).parse(less).to_css(:compress => compress?)
         end.join("\n")
 
         compiled_css = case @compress
@@ -69,11 +69,9 @@ module Rack::Less
           compiled_css
         end
 
-        if cache? && !File.exists?(cf = File.join(@cache, "#{@css_resource}.css"))
+        if cache? && (cf = File.join(@cache, "#{@css_resource}.css"))
           FileUtils.mkdir_p(File.dirname(cf))
-          File.open(cf, "w") do |file|
-            file.write(compiled_css)
-          end
+          File.open(cf, "w") { |file| file.write(compiled_css) }
         end
 
         compiled_css
