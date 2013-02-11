@@ -34,7 +34,7 @@ and use as follows:
 
 == Using with Rails
 
-Add this to your `config/environment.rb`:
+Add this to your environment files (development.rb, production.rb, test.rb) located under `config/environments/`:
 
     config.middleware.use "Rack::Less"
 
